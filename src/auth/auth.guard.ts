@@ -4,35 +4,63 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { validateRequest } from '../common/utils/validate-request.util';
-import { ResponseUserDto } from '../user/dto/response-user.dto';
+
+import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
 
 @Injectable()
 export class AdminGuard implements CanActivate {
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  constructor(private jwtService: JwtService) {}
+
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context
       .switchToHttp()
-      .getRequest<Req<{ user: ResponseUserDto }>>();
-
-    if (!request.user) {
+      .getRequest<Req<{ user: JwtPayload }>>();
+    const token = this.extractTokenFromHeader(request);
+    if (!token) {
       throw new UnauthorizedException();
     }
-    return validateRequest(request.user);
+    const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
+    return payload.role === 'ADMIN' && request['user'] === payload;
   }
+
+  private extractTokenFromHeader(request: Request): string | undefined {
+    const [type, token] = request.headers.authorization?.split(' ') ?? [];
+    return type === 'Bearer' ? token : undefined;
+  }
+}
+
+interface JwtPayload {
+  sub: string;
+  email: string;
+  username: string;
+  role: string;
 }
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
-    const request = context.switchToHttp().getRequest<Request>();
+  constructor(private jwtService: JwtService) {}
 
-    console.log(request);
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context
+      .switchToHttp()
+      .getRequest<Req<{ user: JwtPayload }>>();
+    const token = this.extractTokenFromHeader(request);
+    if (!token) {
+      throw new UnauthorizedException();
+    }
+    try {
+      const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
+      request['user'] = payload;
+    } catch {
+      throw new UnauthorizedException();
+    }
     return true;
+  }
+
+  private extractTokenFromHeader(request: Request): string | undefined {
+    const [type, token] = request.headers.authorization?.split(' ') ?? [];
+    return type === 'Bearer' ? token : undefined;
   }
 }
 

@@ -1,12 +1,20 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { compare, genSalt, hash } from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService,
+  ) {}
   async register(createUserDto: CreateUserDto) {
     const { password } = createUserDto;
     const hashedPassword = await this.hashPassword(password);
@@ -22,17 +30,34 @@ export class AuthService {
         ? await this.userService.findOneByUsername(username)
         : null;
     if (!user) throw new BadRequestException();
-    const isCorrectPassword = await this.comparePassword(password, user.password)
-    if(!isCorrectPassword) throw new UnauthorizedException("Incorrect Password")
-    return this.userService.create({ password: hashedPassword.  });
+    const isCorrectPassword = await this.comparePassword(
+      password,
+      user.password,
+    );
+    if (!isCorrectPassword)
+      throw new UnauthorizedException('Incorrect Password');
+
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      username: user.username,
+      role: user.role,
+    };
+    const accessToken = await this.jwtService.signAsync(payload);
+    return {
+      access_token: accessToken,
+    };
   }
   async hashPassword(password: string) {
     const salt = await genSalt();
     const hashedPassword = hash(password, salt);
     return hashedPassword;
   }
-  async comparePassword(humanReadablePassword: string, hashedPassword: string ): Promise<boolean> {
-    const isMatch = await compare(humanReadablePassword, hashedPassword)
-    return isMatch
+  async comparePassword(
+    humanReadablePassword: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
+    const isMatch = await compare(humanReadablePassword, hashedPassword);
+    return isMatch;
   }
 }
