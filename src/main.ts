@@ -7,6 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
+    .addBearerAuth()
     .setTitle('Congo Sphere')
     .setDescription(
       "Swagger for Congo's best event Registration and Management App",

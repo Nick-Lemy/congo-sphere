@@ -21,7 +21,7 @@ export class AdminGuard implements CanActivate {
       throw new UnauthorizedException();
     }
     const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
-    return payload.role === 'ADMIN' && request['user'] === payload;
+    return payload.role === 'ADMIN';
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {
