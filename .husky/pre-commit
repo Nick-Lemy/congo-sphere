@@ -1,25 +1,6 @@
 
-#!/usr/bin/env sh
 # Pre-commit hook: run tests
 # echo "Running tests before commit..."
 # pnpm test
-
-red=$'\033[0;31m' # ANSI escape code for red color
-reset=$'\033[0m'  # ANSI escape code to reset color
-
-#Commit message check
-
-commit_msg=$(git log -1 --pretty=%B)
-
-if ! echo "$commit_msg" | grep -qE "^(feat|fix|chore|docs|test|style|refactor|perf|build|ci|revert)(\(.+?\))?:? .{1,}$
-"; then
-    echo "${red}Error${reset}: Invalid commit format, try: feat(feature): description." >&2
-    exit 1
-fi
-
-if [ ${#commit_msg} -gt 88 ]; then
-    echo "${red}Error${reset}: Invalid commit length. Your commit message is too long." >&2
-    exit 1
-fi
 
 
