@@ -10,7 +10,7 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiBody, ApiOperation, ApiParam } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { SerializeInterceptor } from '../common/interceptors/serialize.interceptor';
 import { ResponseUserDto } from './dto/response-user.dto';
 
@@ -23,6 +23,15 @@ export class UserController {
     summary: 'Retrieve a list of all users',
     description: 'Get a list of all registered users',
   })
+  @ApiResponse({
+    status: 200,
+    description: 'List of all users',
+    type: [ResponseUserDto],
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+  })
   @Get('')
   findAll() {
     return this.userService.findAll();
@@ -31,6 +40,19 @@ export class UserController {
   @ApiOperation({
     summary: 'Retrieve a single user by their unique identifier',
     description: 'Get the details of a specific user using their ID',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The user details',
+    type: ResponseUserDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
   })
   @ApiParam({
     name: 'id',
@@ -46,6 +68,23 @@ export class UserController {
     summary: 'Create a new user',
     description: 'Create a new user with the provided details',
   })
+  @ApiResponse({
+    status: 201,
+    description: 'The user has been successfully created',
+    type: ResponseUserDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad request - invalid input data',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+  })
+  @ApiBody({
+    type: CreateUserDto,
+    description: 'The details of the user to create',
+  })
   @Post('')
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
@@ -54,6 +93,19 @@ export class UserController {
   @ApiOperation({
     summary: 'Update an existing user',
     description: 'Update the details of an existing user',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The user has been successfully updated',
+    type: ResponseUserDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
   })
   @ApiParam({
     name: 'id',
