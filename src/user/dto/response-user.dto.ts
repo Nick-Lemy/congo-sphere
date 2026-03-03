@@ -17,7 +17,4 @@ export class ResponseUserDto {
   @ApiProperty()
   @Expose()
   name!: string;
-
-  @Expose()
-  role!: string;
 }
