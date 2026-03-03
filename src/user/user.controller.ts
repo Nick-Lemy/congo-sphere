@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -119,5 +120,30 @@ export class UserController {
   @Put(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
+  }
+  @ApiOperation({
+    summary: 'Delete a user',
+    description: 'Delete a user by their unique identifier',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The user has been successfully deleted',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Unique identifier of the user',
+    type: String,
+  })
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.userService.delete(id);
   }
 }

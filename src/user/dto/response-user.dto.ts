@@ -17,8 +17,4 @@ export class ResponseUserDto {
   @ApiProperty()
   @Expose()
   name!: string;
-
-  @ApiProperty()
-  @Expose()
-  createdAt!: Date;
 }

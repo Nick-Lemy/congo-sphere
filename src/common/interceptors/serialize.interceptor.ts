@@ -14,9 +14,6 @@ export class SerializeInterceptor<T> implements NestInterceptor {
     return next.handle().pipe(
       map((data) => {
         if (Array.isArray(data)) {
-          console.log(
-            'Data is an empty array, returning empty array without transformation.',
-          );
           if (data.length === 0) {
             return [];
           }

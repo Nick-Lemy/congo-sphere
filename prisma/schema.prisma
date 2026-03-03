@@ -15,11 +15,12 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
+  id       String   @id @default(uuid())
   name     String
-  username String @unique
-  email    String @unique
+  username String   @unique
+  email    String   @unique
   password String
+  role     UserRole @default(USER)
 
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
@@ -57,4 +58,9 @@ model EventUser {
 enum EventRole {
   HOST
   ATTENDEE
+}
+
+enum UserRole {
+  USER
+  ADMIN
 }

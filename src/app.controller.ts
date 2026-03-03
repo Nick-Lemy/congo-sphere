@@ -20,6 +20,10 @@ export class AppController {
       },
     },
   })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+  })
   @Get()
   getHello(): string {
     return this.appService.getHello();
