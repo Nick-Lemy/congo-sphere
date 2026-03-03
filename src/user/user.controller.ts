@@ -1,9 +1,20 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseInterceptors,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiBody, ApiOperation, ApiParam } from '@nestjs/swagger';
+import { SerializeInterceptor } from '../common/interceptors/serialize.interceptor';
+import { ResponseUserDto } from './dto/response-user.dto';
 
+@UseInterceptors(new SerializeInterceptor(ResponseUserDto))
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
