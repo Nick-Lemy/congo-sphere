@@ -10,14 +10,16 @@ import {
 export class CreateUserDto {
   @ApiProperty({
     description: 'Full name of the user',
-    default: 'Verone Mankou',
+    example: 'Verone Mankou',
+    type: String,
   })
   @IsString()
   name!: string;
 
   @ApiProperty({
     description: 'Unique username for the user',
-    default: 'verone_mankou',
+    example: 'verone_mankou',
+    type: String,
   })
   @IsString()
   @Length(3, 20)
@@ -28,7 +30,8 @@ export class CreateUserDto {
 
   @ApiProperty({
     description: 'Email address of the user',
-    default: 'verone.mankou@example.com',
+    example: 'verone.mankou@example.com',
+    type: String,
   })
   @IsString()
   @IsEmail()
@@ -36,7 +39,8 @@ export class CreateUserDto {
 
   @ApiProperty({
     description: 'Password for the user account',
-    default: 'SecurePassword123!',
+    example: 'SecurePassword123!',
+    type: String,
   })
   @IsString()
   @IsStrongPassword()

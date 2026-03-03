@@ -12,7 +12,6 @@ async function bootstrap() {
       "Swagger for Congo's best event Registration and Management App",
     )
     .setVersion('0.1.1')
-    .addTag('Event')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
