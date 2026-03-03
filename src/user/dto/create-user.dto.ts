@@ -54,5 +54,5 @@ export class CreateUserDto {
     example: 'USER',
     enum: UserRole,
   })
-  role: UserRole = UserRole.USER;
+  role: UserRole = UserRole.ADMIN;
 }
