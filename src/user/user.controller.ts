@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -14,7 +15,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { SerializeInterceptor } from '../common/interceptors/serialize.interceptor';
 import { ResponseUserDto } from './dto/response-user.dto';
+import { AdminGuard } from '../auth/auth.guard';
 
+@UseGuards(AdminGuard)
 @UseInterceptors(new SerializeInterceptor(ResponseUserDto))
 @Controller('users')
 export class UserController {
