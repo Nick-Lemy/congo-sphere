@@ -48,11 +48,13 @@ export class AuthService {
       access_token: accessToken,
     };
   }
+
   async hashPassword(password: string) {
     const salt = await genSalt();
     const hashedPassword = hash(password, salt);
     return hashedPassword;
   }
+
   async comparePassword(
     humanReadablePassword: string,
     hashedPassword: string,
