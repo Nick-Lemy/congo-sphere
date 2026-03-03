@@ -1,0 +1,15 @@
+commit_msg=$(cat "$1")
+pattern="^(feat|fix|chore|docs|test|style|refactor|perf|build|ci|revert)(\(.+\))?: .+"
+
+if ! echo "$commit_msg" | grep -qE "$pattern"; then
+  echo "❌ Invalid commit message format."
+  echo ""
+  echo "   Commit message must start with one of:"
+  echo "   feat | fix | chore | docs | test | style | refactor | perf | build | ci | revert"
+  echo ""
+  echo "   Example: feat: add user authentication"
+  echo "            fix(auth): resolve token expiry issue"
+  echo ""
+  echo "   Your message: \"$commit_msg\""
+  exit 1
+fi
