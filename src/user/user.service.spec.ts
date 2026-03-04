@@ -125,9 +125,14 @@ describe('UserService', () => {
         userOne,
       );
     });
-    // it(
-    //   'should throw NotFoundException when user with given username does not exist',
-    // );
+    it('should throw NotFoundException when user with given username does not exist', async () => {
+      mockPrismaService.user.findUnique.mockRejectedValue(
+        new NotFoundException(),
+      );
+      await expect(
+        service.findOneByUsername('unexistant.user@example.com'),
+      ).rejects.toThrow(NotFoundException);
+    });
   });
 
   // describe('update', () => {
