@@ -1,6 +1,8 @@
-
-# Pre-commit hook: run tests
-# echo "Running tests before commit..."
-# pnpm test
-
+# Pre-commit hook: run lints
+echo "Running lints..."
+pnpm lint
+if [ $? -ne 0 ]; then
+  echo "Linting failed. Please fix the issues before committing."
+  exit 1
+fi
 
