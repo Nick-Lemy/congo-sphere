@@ -3,6 +3,7 @@ import { UserService } from './user.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ResponseUserDto } from './dto/response-user.dto';
+import { NotFoundException } from '@nestjs/common';
 
 describe('UserService', () => {
   let service: UserService;
@@ -85,10 +86,29 @@ describe('UserService', () => {
     });
   });
 
-  // describe('findOne', () => {
-  //   it('should return a user when a valid id is provided');
-  //   it('should throw NotFoundException when user with given id does not exist');
-  // });
+  describe('findOne', () => {
+    it('should return a user when a valid id is provided', async () => {
+      const user: ResponseUserDto = {
+        id: '1',
+        email: 'a@example.com',
+        name: 'A',
+        username: 'a_user',
+        role: 'USER',
+      };
+      mockPrismaService.user.findUnique.mockResolvedValue(user);
+
+      const result = await service.findOne(user.id);
+      expect(result).toEqual(user);
+    });
+    it('should throw NotFoundException when user with given id does not exist', async () => {
+      mockPrismaService.user.findUnique.mockRejectedValue(
+        new NotFoundException(),
+      );
+      await expect(service.findOne('random-uuid')).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+  });
 
   // describe('findOneByEmail', () => {
   //   it('should return a user when a valid email is provided');
