@@ -135,12 +135,26 @@ describe('UserService', () => {
     });
   });
 
-  // describe('update', () => {
-  //   it('should update and return the updated user');
-  //   it('should only update the fields provided in the dto');
-  // });
+  describe('update', () => {
+    const updatedUser = {
+      name: 'Random Guy',
+    };
+    it('should update and return the updated user', async () => {
+      mockPrismaService.user.update.mockResolvedValue({
+        ...updatedUser,
+        ...userOne,
+      });
+      expect(await service.update(userOne.id, updatedUser)).toEqual({
+        ...updatedUser,
+        ...userOne,
+      });
+    });
+  });
 
-  // describe('delete', () => {
-  //   it('should delete a user and return the deleted user');
-  // });
+  describe('delete', () => {
+    it('should delete a user and return the deleted user', async () => {
+      mockPrismaService.user.delete.mockResolvedValue(userOne);
+      expect(await service.delete(userOne.id)).toEqual(userOne);
+    });
+  });
 });
