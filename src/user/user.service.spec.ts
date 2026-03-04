@@ -7,6 +7,33 @@ import { NotFoundException } from '@nestjs/common';
 
 describe('UserService', () => {
   let service: UserService;
+  const newUser: CreateUserDto = {
+    email: 'random.user@example.com',
+    name: 'Random User',
+    password: 'Ramdom#1234',
+    username: 'ramdom_user2025',
+  };
+  const userOne = {
+    id: '1',
+    email: 'a@example.com',
+    name: 'A',
+    username: 'a_user',
+    role: 'USER',
+  };
+  const expectedNewUser: ResponseUserDto = {
+    id: 'some-uuid',
+    email: newUser.email,
+    name: newUser.name,
+    username: newUser.username,
+    role: 'USER',
+  };
+  const userTwo = {
+    id: '2',
+    email: 'b@example.com',
+    name: 'B',
+    username: 'b_user',
+    role: 'USER',
+  };
   const mockPrismaService = {
     user: {
       create: jest.fn(),
@@ -35,46 +62,18 @@ describe('UserService', () => {
 
   describe('create', () => {
     it('should create a user and return the created user', async () => {
-      const newUser: CreateUserDto = {
-        email: 'random.user@example.com',
-        name: 'Random User',
-        password: 'Ramdom#1234',
-        username: 'ramdom_user2025',
-      };
-      const expectedUser: ResponseUserDto = {
-        id: 'some-uuid',
-        email: newUser.email,
-        name: newUser.name,
-        username: newUser.username,
-        role: 'USER',
-      };
-      mockPrismaService.user.create.mockResolvedValue(expectedUser);
+      mockPrismaService.user.create.mockResolvedValue(expectedNewUser);
       const result = await service.create(newUser);
       expect(mockPrismaService.user.create).toHaveBeenCalledWith({
         data: newUser,
       });
-      expect(result).toEqual(expectedUser);
+      expect(result).toEqual(expectedNewUser);
     });
   });
 
   describe('findAll', () => {
     it('should return an array of users', async () => {
-      const users: ResponseUserDto[] = [
-        {
-          id: '1',
-          email: 'a@example.com',
-          name: 'A',
-          username: 'a_user',
-          role: 'USER',
-        },
-        {
-          id: '2',
-          email: 'b@example.com',
-          name: 'B',
-          username: 'b_user',
-          role: 'USER',
-        },
-      ];
+      const users: ResponseUserDto[] = [userOne, userTwo];
       mockPrismaService.user.findMany.mockResolvedValue(users);
       const result = await service.findAll();
       expect(result).toEqual(users);
@@ -88,17 +87,10 @@ describe('UserService', () => {
 
   describe('findOne', () => {
     it('should return a user when a valid id is provided', async () => {
-      const user: ResponseUserDto = {
-        id: '1',
-        email: 'a@example.com',
-        name: 'A',
-        username: 'a_user',
-        role: 'USER',
-      };
-      mockPrismaService.user.findUnique.mockResolvedValue(user);
+      mockPrismaService.user.findUnique.mockResolvedValue(userOne);
 
-      const result = await service.findOne(user.id);
-      expect(result).toEqual(user);
+      const result = await service.findOne(userOne.id);
+      expect(result).toEqual(userOne);
     });
     it('should throw NotFoundException when user with given id does not exist', async () => {
       mockPrismaService.user.findUnique.mockRejectedValue(
@@ -110,19 +102,33 @@ describe('UserService', () => {
     });
   });
 
-  // describe('findOneByEmail', () => {
-  //   it('should return a user when a valid email is provided');
-  //   it(
-  //     'should throw NotFoundException when user with given email does not exist',
-  //   );
-  // });
+  describe('findOneByEmail', () => {
+    it('should return a user when a valid email is provided', async () => {
+      mockPrismaService.user.findUnique.mockResolvedValue(userOne);
+      const result = await service.findOneByEmail(userOne.email);
+      expect(result).toEqual(userOne);
+    });
+    it('should throw NotFoundException when user with given email does not exist', async () => {
+      mockPrismaService.user.findUnique.mockRejectedValue(
+        new NotFoundException(),
+      );
+      await expect(
+        service.findOneByEmail('unexistant.user@example.com'),
+      ).rejects.toThrow(NotFoundException);
+    });
+  });
 
-  // describe('findOneByUsername', () => {
-  //   it('should return a user when a valid username is provided');
-  //   it(
-  //     'should throw NotFoundException when user with given username does not exist',
-  //   );
-  // });
+  describe('findOneByUsername', () => {
+    it('should return a user when a valid username is provided', async () => {
+      mockPrismaService.user.findUnique.mockResolvedValue(userOne);
+      expect(await service.findOneByUsername(userOne.username)).toEqual(
+        userOne,
+      );
+    });
+    // it(
+    //   'should throw NotFoundException when user with given username does not exist',
+    // );
+  });
 
   // describe('update', () => {
   //   it('should update and return the updated user');
