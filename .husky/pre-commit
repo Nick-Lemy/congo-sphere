@@ -1,6 +1,0 @@
-
-# Pre-commit hook: run tests
-# echo "Running tests before commit..."
-# pnpm test
-
-
