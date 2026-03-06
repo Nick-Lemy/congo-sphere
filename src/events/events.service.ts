@@ -14,24 +14,28 @@ export class EventsService {
   ) {}
 
   async create(currentUser: JwtPayload, createEventDto: CreateEventDto) {
-    const { sub: id, ...rest } = currentUser;
     const event = await this.prisma.event.create({
-      data: { ...rest, ...createEventDto },
+      data: { ...createEventDto },
     });
     await this.eventUsersService.create({
       eventId: event.id,
-      userId: id,
+      userId: currentUser.sub,
       role: EventRole.HOST,
     });
     return event;
   }
 
   findAll() {
-    return this.prisma.event.findMany();
+    return this.prisma.event.findMany({
+      include: { participants: true },
+    });
   }
 
   findOne(id: string) {
-    return this.prisma.event.findUnique({ where: { id } });
+    return this.prisma.event.findUnique({
+      where: { id },
+      include: { participants: true },
+    });
   }
 
   update(id: string, updateEventDto: UpdateEventDto) {
