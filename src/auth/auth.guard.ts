@@ -7,6 +7,7 @@ import {
 
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+import { JwtPayload } from '../common/types/jtw.type';
 
 @Injectable()
 export class AdminGuard implements CanActivate {
@@ -28,13 +29,6 @@ export class AdminGuard implements CanActivate {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
   }
-}
-
-interface JwtPayload {
-  sub: string;
-  email: string;
-  username: string;
-  role: string;
 }
 
 @Injectable()
