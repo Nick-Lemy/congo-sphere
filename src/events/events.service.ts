@@ -27,7 +27,7 @@ export class EventsService {
 
   findAll() {
     return this.prisma.event.findMany({
-      include: { participants: true },
+      include: { participants: { where: { role: EventRole.HOST } } },
     });
   }
 
