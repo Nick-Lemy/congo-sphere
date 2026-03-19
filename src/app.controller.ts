@@ -25,7 +25,7 @@ export class AppController {
     description: 'Internal server error',
   })
   @Get()
-  getHello(): string {
+  getHello(): { message: string } {
     return this.appService.getHello();
   }
 }

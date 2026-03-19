@@ -43,7 +43,7 @@ export class AuthService {
       username: user.username,
       role: user.role,
     };
-    console.log('Payload for JWT:', payload); // Debugging log
+    console.log('Payload for JWT:', payload);
     const accessToken = await this.jwtService.signAsync(payload);
     return {
       access_token: accessToken,
