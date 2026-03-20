@@ -14,16 +14,15 @@ export class FileService {
 
   async uploadImage(file: Express.Multer.File) {
     const tmpPath = `./tmp/${randomUUID()}-${file.originalname}`;
-
     try {
       await mkdir('./tmp', { recursive: true });
       await writeFile(tmpPath, file.buffer);
 
       const { secure_url } = await cloudinary.uploader.upload(tmpPath);
-
       return secure_url;
     } catch (error) {
       console.error('Upload failed:', error);
+
       throw new InternalServerErrorException();
     } finally {
       await unlink(tmpPath).catch((err: Error) => {
