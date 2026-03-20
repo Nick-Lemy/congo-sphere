@@ -89,6 +89,7 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 export const EventScalarFieldEnum = {
   id: 'id',
   title: 'title',
+  imageUrl: 'imageUrl',
   description: 'description',
   location: 'location',
   startDate: 'startDate',
