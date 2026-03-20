@@ -6,7 +6,9 @@ import {
   Param,
   Post,
   Put,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
@@ -15,6 +17,8 @@ import { type JwtPayload } from '../common/types/jtw.type';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/auth.guard';
 import { UpdateEventDto } from './dto/update-event.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import 'multer';
 
 @Controller('events')
 export class EventsController {
@@ -52,11 +56,13 @@ export class EventsController {
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
   @Post('')
+  @UseInterceptors(FileInterceptor('file'))
   create(
+    @UploadedFile() file: Express.Multer.File,
     @Body() createEventDto: CreateEventDto,
     @CurrentUser() user: JwtPayload,
   ) {
-    return this.eventsService.create(user, createEventDto);
+    return this.eventsService.create(user, createEventDto, file);
   }
 
   @ApiOperation({

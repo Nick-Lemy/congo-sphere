@@ -5,17 +5,24 @@ import { UpdateEventDto } from './dto/update-event.dto';
 import { JwtPayload } from '../common/types/jtw.type';
 import { EventUsersService } from '../event-users/event-users.service';
 import { EventRole } from '../generated/prisma/enums';
+import { FileService } from '../file/file.service';
 
 @Injectable()
 export class EventsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly eventUsersService: EventUsersService,
+    private readonly fileService: FileService,
   ) {}
 
-  async create(currentUser: JwtPayload, createEventDto: CreateEventDto) {
+  async create(
+    currentUser: JwtPayload,
+    createEventDto: CreateEventDto,
+    file: Express.Multer.File,
+  ) {
+    const imageUrl = await this.fileService.uploadImage(file);
     const event = await this.prisma.event.create({
-      data: { ...createEventDto },
+      data: { ...createEventDto, imageUrl },
     });
     await this.eventUsersService.create({
       eventId: event.id,
