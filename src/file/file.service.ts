@@ -15,12 +15,14 @@ export class FileService {
     const tmpPath = `./tmp/${file.originalname}`;
     try {
       await writeFile(tmpPath, file.buffer);
-      const { url: imageUrl } = await cloudinary.uploader.upload(tmpPath);
-      await unlink(tmpPath);
+      const { secure_url: imageUrl } =
+        await cloudinary.uploader.upload(tmpPath);
       return imageUrl;
     } catch (error) {
-      console.log(error);
+      console.error('Upload failed:', error);
       throw new InternalServerErrorException();
+    } finally {
+      await unlink(tmpPath);
     }
   }
 }
