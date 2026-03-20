@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
@@ -20,16 +24,21 @@ export class EventsService {
     createEventDto: CreateEventDto,
     file: Express.Multer.File,
   ) {
-    const imageUrl = await this.fileService.uploadImage(file);
-    const event = await this.prisma.event.create({
-      data: { ...createEventDto, imageUrl },
-    });
-    await this.eventUsersService.create({
-      eventId: event.id,
-      userId: currentUser.sub,
-      role: EventRole.HOST,
-    });
-    return event;
+    try {
+      const imageUrl = await this.fileService.uploadImage(file);
+      const event = await this.prisma.event.create({
+        data: { ...createEventDto, imageUrl },
+      });
+      await this.eventUsersService.create({
+        eventId: event.id,
+        userId: currentUser.sub,
+        role: EventRole.HOST,
+      });
+      return event;
+    } catch (error) {
+      console.error('Failed to create event:', error);
+      throw new InternalServerErrorException('Failed to create event');
+    }
   }
 
   findAll() {
@@ -45,13 +54,26 @@ export class EventsService {
     });
   }
 
-  async update(id: string, updateEventDto: UpdateEventDto) {
-    const event = await this.findOne(id);
-    if (!event) throw new NotFoundException();
-    return this.prisma.event.update({
-      where: { id: event.id },
-      data: updateEventDto,
-    });
+  async update(
+    id: string,
+    updateEventDto: UpdateEventDto,
+    file: Express.Multer.File,
+  ) {
+    try {
+      const event = await this.findOne(id);
+      if (!event) throw new NotFoundException();
+      if (file) {
+        const imageUrl = await this.fileService.uploadImage(file);
+        updateEventDto.imageUrl = imageUrl;
+      }
+      return this.prisma.event.update({
+        where: { id: event.id },
+        data: updateEventDto,
+      });
+    } catch (error) {
+      console.error('Failed to update event:', error);
+      throw new InternalServerErrorException('Failed to update event');
+    }
   }
 
   async delete(id: string) {

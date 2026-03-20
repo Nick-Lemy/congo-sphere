@@ -104,11 +104,17 @@ export class EventsController {
     status: 401,
     description: 'Unauthorized',
   })
+  @ApiConsumes('multipart/form-data')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
+  @UseInterceptors(FileInterceptor('file'))
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
-    return this.eventsService.update(id, updateEventDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateEventDto: UpdateEventDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.eventsService.update(id, updateEventDto, file);
   }
 
   @ApiOperation({
