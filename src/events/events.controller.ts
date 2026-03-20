@@ -14,7 +14,12 @@ import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { type JwtPayload } from '../common/types/jtw.type';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { AuthGuard } from '../auth/auth.guard';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -53,8 +58,9 @@ export class EventsController {
     status: 400,
     description: 'Bad request',
   })
-  @UseGuards(AuthGuard)
+  @ApiConsumes('multipart/form-data')
   @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Post('')
   @UseInterceptors(FileInterceptor('file'))
   create(
