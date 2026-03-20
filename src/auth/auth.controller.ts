@@ -1,11 +1,28 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ResponseUserDto } from '../user/dto/response-user.dto';
+import { CurrentUser } from './current-user.decorator';
+import { type JwtPayload } from '../common/types/jtw.type';
+import { AuthGuard } from './auth.guard';
+import { SerializeInterceptor } from '../common/interceptors/serialize.interceptor';
 
 @ApiTags('Authentication')
+@UseInterceptors(new SerializeInterceptor(ResponseUserDto))
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -53,5 +70,29 @@ export class AuthController {
   @Post('login')
   login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
+  }
+
+  @ApiOperation({
+    summary: 'Get current user information',
+    description: 'Retrieve information about the currently authenticated user.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Current user information retrieved successfully',
+    type: ResponseUserDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - Invalid credentials',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Get('me')
+  async getCurrentUser(@CurrentUser() user: JwtPayload) {
+    return await this.authService.getCurrentUser(user.sub);
   }
 }

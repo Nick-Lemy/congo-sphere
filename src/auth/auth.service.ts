@@ -15,12 +15,18 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
   ) {}
+
   async register(createUserDto: CreateUserDto) {
     const { password } = createUserDto;
     const hashedPassword = await this.hashPassword(password);
     createUserDto.password = hashedPassword;
     return this.userService.create(createUserDto);
   }
+
+  async getCurrentUser(userId: string) {
+    return this.userService.findOne(userId);
+  }
+
   async login(loginDto: LoginDto) {
     const { email, username, password } = loginDto;
 
