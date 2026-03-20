@@ -57,7 +57,7 @@ export class EventsService {
   async update(
     id: string,
     updateEventDto: UpdateEventDto,
-    file: Express.Multer.File,
+    file?: Express.Multer.File,
   ) {
     try {
       const event = await this.findOne(id);
