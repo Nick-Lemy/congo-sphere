@@ -118,6 +118,42 @@ export class EventsController {
   }
 
   @ApiOperation({
+    summary: 'Register to an event',
+    description: 'Register to a single event by id',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Event registered successfully',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Event not found!',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+  })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Post(':id/register')
+  registerToEvent(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
+    return this.eventsService.registerToEvent(id, user);
+  }
+
+  @ApiOperation({
+    summary: 'Cancel event registration',
+    description: 'Unregisters the current user from the event',
+  })
+  @ApiResponse({ status: 204, description: 'Successfully unregistered' })
+  @ApiResponse({ status: 404, description: 'Event or registration not found' })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Delete(':id/register')
+  cancelRegistration(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
+    return this.eventsService.cancelRegistration(id, user);
+  }
+
+  @ApiOperation({
     summary: 'Delete an event',
     description: 'Delete a single event by id',
   })
