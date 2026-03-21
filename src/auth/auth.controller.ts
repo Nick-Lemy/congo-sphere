@@ -22,7 +22,6 @@ import { AuthGuard } from './auth.guard';
 import { SerializeInterceptor } from '../common/interceptors/serialize.interceptor';
 
 @ApiTags('Authentication')
-@UseInterceptors(new SerializeInterceptor(ResponseUserDto))
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -45,6 +44,7 @@ export class AuthController {
     description: 'Internal Server Error',
   })
   @Post('register')
+  @UseInterceptors(new SerializeInterceptor(ResponseUserDto))
   register(@Body() createUserDto: CreateUserDto) {
     return this.authService.register(createUserDto);
   }
@@ -90,6 +90,7 @@ export class AuthController {
     description: 'Internal Server Error',
   })
   @ApiBearerAuth()
+  @UseInterceptors(new SerializeInterceptor(ResponseUserDto))
   @UseGuards(AuthGuard)
   @Get('me')
   async getCurrentUser(@CurrentUser() user: JwtPayload) {

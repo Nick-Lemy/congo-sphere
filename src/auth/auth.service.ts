@@ -30,30 +30,36 @@ export class AuthService {
   async login(loginDto: LoginDto) {
     const { email, username, password } = loginDto;
 
-    const user = email
-      ? await this.userService.findOneByEmail(email)
-      : username
-        ? await this.userService.findOneByUsername(username)
-        : null;
-    if (!user) throw new BadRequestException();
-    const isCorrectPassword = await this.comparePassword(
-      password,
-      user.password,
-    );
-    if (!isCorrectPassword)
-      throw new UnauthorizedException('Incorrect Password');
+    try {
+      const user = email
+        ? await this.userService.findOneByEmail(email)
+        : username
+          ? await this.userService.findOneByUsername(username)
+          : null;
+      if (!user) throw new BadRequestException();
+      const isCorrectPassword = await this.comparePassword(
+        password,
+        user.password,
+      );
+      if (!isCorrectPassword)
+        throw new UnauthorizedException('Incorrect Password');
 
-    const payload = {
-      sub: user.id,
-      email: user.email,
-      username: user.username,
-      role: user.role,
-    };
-    console.log('Payload for JWT:', payload);
-    const accessToken = await this.jwtService.signAsync(payload);
-    return {
-      access_token: accessToken,
-    };
+      const payload = {
+        sub: user.id,
+        email: user.email,
+        username: user.username,
+        role: user.role,
+      };
+      const accessToken = await this.jwtService.signAsync(payload);
+      return {
+        access_token: accessToken,
+      };
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error instanceof BadRequestException
+        ? error
+        : new UnauthorizedException('Login failed');
+    }
   }
 
   async hashPassword(password: string) {
