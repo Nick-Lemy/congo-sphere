@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -16,18 +12,13 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto, file?: Express.Multer.File) {
-    try {
-      if (file) {
-        const avatarUrl = await this.filesService.uploadImage(file);
-        createUserDto.avatarUrl = avatarUrl;
-      }
-      return this.prisma.user.create({
-        data: createUserDto,
-      });
-    } catch (error) {
-      console.error('Error while creating user, ', error);
-      throw new InternalServerErrorException('Failed to create user');
+    if (file) {
+      const avatarUrl = await this.filesService.uploadImage(file);
+      createUserDto.avatarUrl = avatarUrl;
     }
+    return this.prisma.user.create({
+      data: createUserDto,
+    });
   }
 
   async findAll() {
@@ -59,10 +50,7 @@ export class UserService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    const user = await this.prisma.user.findUnique({ where: { id } });
-    if (!user) {
-      throw new NotFoundException(`User Not Found`);
-    }
+    await this.findOne(id);
     return this.prisma.user.update({
       where: { id },
       data: { ...updateUserDto },
@@ -70,10 +58,9 @@ export class UserService {
   }
 
   async delete(id: string) {
-    const user = await this.prisma.user.findUnique({ where: { id } });
-    if (!user) {
-      throw new NotFoundException(`User Not Found`);
-    }
+    await this.findOne(id);
     return this.prisma.user.delete({ where: { id } });
   }
+
+  private async;
 }

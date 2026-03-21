@@ -1,6 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsEmail,
+  IsOptional,
   IsString,
   IsStrongPassword,
   Length,
@@ -13,6 +14,7 @@ export class UpdateUserDto {
     example: 'Verone Mankou',
     type: String,
   })
+  @IsOptional()
   @IsString()
   name?: string;
 
@@ -22,6 +24,7 @@ export class UpdateUserDto {
     type: String,
   })
   @IsString()
+  @IsOptional()
   @Length(3, 20)
   @Matches(/^[a-zA-Z0-9_]+$/, {
     message: 'Username can only contain letters, numbers, and underscores',
@@ -34,6 +37,7 @@ export class UpdateUserDto {
     type: String,
   })
   @IsString()
+  @IsOptional()
   @IsEmail()
   email?: string;
 
@@ -42,10 +46,12 @@ export class UpdateUserDto {
     example: 'SecurePassword123!',
     type: String,
   })
+  @IsOptional()
   @IsString()
   @IsStrongPassword()
   password?: string;
 
+  @IsOptional()
   @IsString()
   avatarUrl?: string =
     'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
