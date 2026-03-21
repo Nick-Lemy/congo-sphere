@@ -14,13 +14,15 @@ datasource db {
   provider = "postgresql"
 }
 
+// https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg
 model User {
-  id       String   @id @default(uuid())
-  name     String
-  username String   @unique
-  email    String   @unique
-  password String
-  role     UserRole @default(USER)
+  id        String   @id @default(uuid())
+  name      String
+  username  String   @unique
+  avatarUrl String   @default("https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y")
+  email     String   @unique
+  password  String
+  role      UserRole @default(USER)
 
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
