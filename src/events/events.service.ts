@@ -27,15 +27,20 @@ export class EventsService {
   ) {
     try {
       const imageUrl = await this.filesService.uploadImage(file);
-      const event = await this.prisma.event.create({
-        data: { ...createEventDto, imageUrl },
+      const newEvent = await this.prisma.$transaction(async (tx) => {
+        const event = await tx.event.create({
+          data: { ...createEventDto, imageUrl },
+        });
+        await tx.eventUser.create({
+          data: {
+            eventId: event.id,
+            userId: currentUser.sub,
+            role: EventRole.HOST,
+          },
+        });
+        return event;
       });
-      await this.eventUsersService.create({
-        eventId: event.id,
-        userId: currentUser.sub,
-        role: EventRole.HOST,
-      });
-      return event;
+      return newEvent;
     } catch (error) {
       console.error('Failed to create event:', error);
       throw new InternalServerErrorException('Failed to create event');
