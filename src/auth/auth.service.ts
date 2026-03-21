@@ -57,7 +57,7 @@ export class AuthService {
 
   async hashPassword(password: string) {
     const salt = await genSalt();
-    const hashedPassword = hash(password, salt);
+    const hashedPassword = await hash(password, salt);
     return hashedPassword;
   }
 
