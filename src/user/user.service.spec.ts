@@ -4,6 +4,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ResponseUserDto } from './dto/response-user.dto';
 import { NotFoundException } from '@nestjs/common';
+import { FileService } from '../file/file.service';
 
 describe('UserService', () => {
   let service: UserService;
@@ -13,25 +14,30 @@ describe('UserService', () => {
     password: 'Ramdom#1234',
     username: 'ramdom_user2025',
   };
-  const userOne = {
+  const userOne: ResponseUserDto = {
     id: '1',
     email: 'a@example.com',
     name: 'A',
     username: 'a_user',
     role: 'USER',
+    avatarUrl:
+      'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y',
   };
   const expectedNewUser: ResponseUserDto = {
     id: 'some-uuid',
     email: newUser.email,
     name: newUser.name,
+    avatarUrl: '',
     username: newUser.username,
     role: 'USER',
   };
-  const userTwo = {
+  const userTwo: ResponseUserDto = {
     id: '2',
     email: 'b@example.com',
     name: 'B',
     username: 'b_user',
+    avatarUrl:
+      'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y',
     role: 'USER',
   };
   const mockPrismaService = {
@@ -43,12 +49,16 @@ describe('UserService', () => {
       delete: jest.fn(),
     },
   };
+  const mockFileService = {
+    uploadImage: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserService,
         { provide: PrismaService, useValue: mockPrismaService },
+        { provide: FileService, useValue: mockFileService },
       ],
     }).compile();
 

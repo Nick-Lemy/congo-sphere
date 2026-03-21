@@ -1,16 +1,33 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { FileService } from '../file/file.service';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly fileService: FileService,
+  ) {}
 
-  async create(createUserDto: CreateUserDto) {
-    return this.prisma.user.create({
-      data: createUserDto,
-    });
+  async create(createUserDto: CreateUserDto, file?: Express.Multer.File) {
+    try {
+      if (file) {
+        const avatarUrl = await this.fileService.uploadImage(file);
+        createUserDto.avatarUrl = avatarUrl;
+      }
+      return this.prisma.user.create({
+        data: createUserDto,
+      });
+    } catch (error) {
+      console.error('Error while creating user, ', error);
+      throw new InternalServerErrorException('Failed to create user');
+    }
   }
 
   async findAll() {
