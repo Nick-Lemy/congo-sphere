@@ -26,7 +26,7 @@ export class EventsService {
     file: Express.Multer.File,
   ) {
     try {
-      const imageUrl = await this.fileService.uploadImage(file);
+      const imageUrl = await this.filesService.uploadImage(file);
       const event = await this.prisma.event.create({
         data: { ...createEventDto, imageUrl },
       });
@@ -64,7 +64,7 @@ export class EventsService {
       const event = await this.findOne(id);
       if (!event) throw new NotFoundException();
       if (file) {
-        const imageUrl = await this.fileService.uploadImage(file);
+        const imageUrl = await this.filesService.uploadImage(file);
         updateEventDto.imageUrl = imageUrl;
       }
       return this.prisma.event.update({
