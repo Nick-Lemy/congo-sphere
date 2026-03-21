@@ -18,6 +18,11 @@ export class ResponseUserDto {
   @Expose()
   name!: string;
 
+  @ApiProperty()
+  @Expose()
+  avatarUrl!: string;
+
+  @ApiProperty()
   @Expose()
   role!: string;
 }
