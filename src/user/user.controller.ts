@@ -15,6 +15,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import {
   ApiBearerAuth,
   ApiBody,
+  ApiConsumes,
   ApiOperation,
   ApiParam,
   ApiResponse,
@@ -97,6 +98,7 @@ export class UserController {
     type: CreateUserDto,
     description: 'The details of the user to create',
   })
+  @ApiConsumes('multipart/form-data')
   @Post('')
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
@@ -128,6 +130,7 @@ export class UserController {
     type: UpdateUserDto,
     description: 'Fields to update for the user',
   })
+  @ApiConsumes('multipart/form-data')
   @Put(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);

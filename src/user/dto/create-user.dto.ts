@@ -55,4 +55,14 @@ export class CreateUserDto {
     enum: UserRole,
   })
   role?: UserRole = UserRole.ADMIN;
+
+  @IsString()
+  avatarUrl?: string;
+
+  @ApiPropertyOptional({
+    type: 'string',
+    format: 'binary',
+    description: 'User Profile image file',
+  })
+  file?: any;
 }
