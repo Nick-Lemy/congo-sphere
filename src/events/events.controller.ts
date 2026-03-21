@@ -6,15 +6,24 @@ import {
   Param,
   Post,
   Put,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { type JwtPayload } from '../common/types/jtw.type';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { AuthGuard } from '../auth/auth.guard';
 import { UpdateEventDto } from './dto/update-event.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import 'multer';
 
 @Controller('events')
 export class EventsController {
@@ -49,14 +58,17 @@ export class EventsController {
     status: 400,
     description: 'Bad request',
   })
-  @UseGuards(AuthGuard)
+  @ApiConsumes('multipart/form-data')
   @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Post('')
+  @UseInterceptors(FileInterceptor('file'))
   create(
+    @UploadedFile() file: Express.Multer.File,
     @Body() createEventDto: CreateEventDto,
     @CurrentUser() user: JwtPayload,
   ) {
-    return this.eventsService.create(user, createEventDto);
+    return this.eventsService.create(user, createEventDto, file);
   }
 
   @ApiOperation({
@@ -92,11 +104,53 @@ export class EventsController {
     status: 401,
     description: 'Unauthorized',
   })
+  @ApiConsumes('multipart/form-data')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
+  @UseInterceptors(FileInterceptor('file'))
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
-    return this.eventsService.update(id, updateEventDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateEventDto: UpdateEventDto,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    return this.eventsService.update(id, updateEventDto, file);
+  }
+
+  @ApiOperation({
+    summary: 'Register to an event',
+    description: 'Register to a single event by id',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Event registered successfully',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Event not found!',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+  })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Post(':id/register')
+  registerToEvent(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
+    return this.eventsService.registerToEvent(id, user);
+  }
+
+  @ApiOperation({
+    summary: 'Cancel event registration',
+    description: 'Unregisters the current user from the event',
+  })
+  @ApiResponse({ status: 204, description: 'Successfully unregistered' })
+  @ApiResponse({ status: 404, description: 'Event or registration not found' })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Delete(':id/register')
+  cancelRegistration(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
+    return this.eventsService.cancelRegistration(id, user);
   }
 
   @ApiOperation({

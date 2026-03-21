@@ -1,9 +1,25 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ResponseUserDto } from '../user/dto/response-user.dto';
+import { CurrentUser } from './current-user.decorator';
+import { type JwtPayload } from '../common/types/jtw.type';
+import { AuthGuard } from './auth.guard';
+import { SerializeInterceptor } from '../common/interceptors/serialize.interceptor';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -28,6 +44,7 @@ export class AuthController {
     description: 'Internal Server Error',
   })
   @Post('register')
+  @UseInterceptors(new SerializeInterceptor(ResponseUserDto))
   register(@Body() createUserDto: CreateUserDto) {
     return this.authService.register(createUserDto);
   }
@@ -53,5 +70,30 @@ export class AuthController {
   @Post('login')
   login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
+  }
+
+  @ApiOperation({
+    summary: 'Get current user information',
+    description: 'Retrieve information about the currently authenticated user.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Current user information retrieved successfully',
+    type: ResponseUserDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - Invalid credentials',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
+  @ApiBearerAuth()
+  @UseInterceptors(new SerializeInterceptor(ResponseUserDto))
+  @UseGuards(AuthGuard)
+  @Get('me')
+  async getCurrentUser(@CurrentUser() user: JwtPayload) {
+    return await this.authService.getCurrentUser(user.sub);
   }
 }

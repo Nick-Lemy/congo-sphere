@@ -50,4 +50,11 @@ export class CreateEventDto {
   @IsNotEmpty()
   @IsDateString()
   endDate!: Date;
+
+  @ApiProperty({
+    type: 'string',
+    format: 'binary',
+    description: 'Event image file',
+  })
+  file?: any;
 }

@@ -27,6 +27,7 @@ export type AggregateEvent = {
 export type EventMinAggregateOutputType = {
   id: string | null
   title: string | null
+  imageUrl: string | null
   description: string | null
   location: string | null
   startDate: Date | null
@@ -38,6 +39,7 @@ export type EventMinAggregateOutputType = {
 export type EventMaxAggregateOutputType = {
   id: string | null
   title: string | null
+  imageUrl: string | null
   description: string | null
   location: string | null
   startDate: Date | null
@@ -49,6 +51,7 @@ export type EventMaxAggregateOutputType = {
 export type EventCountAggregateOutputType = {
   id: number
   title: number
+  imageUrl: number
   description: number
   location: number
   startDate: number
@@ -62,6 +65,7 @@ export type EventCountAggregateOutputType = {
 export type EventMinAggregateInputType = {
   id?: true
   title?: true
+  imageUrl?: true
   description?: true
   location?: true
   startDate?: true
@@ -73,6 +77,7 @@ export type EventMinAggregateInputType = {
 export type EventMaxAggregateInputType = {
   id?: true
   title?: true
+  imageUrl?: true
   description?: true
   location?: true
   startDate?: true
@@ -84,6 +89,7 @@ export type EventMaxAggregateInputType = {
 export type EventCountAggregateInputType = {
   id?: true
   title?: true
+  imageUrl?: true
   description?: true
   location?: true
   startDate?: true
@@ -168,6 +174,7 @@ export type EventGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 export type EventGroupByOutputType = {
   id: string
   title: string
+  imageUrl: string
   description: string
   location: string
   startDate: Date
@@ -200,6 +207,7 @@ export type EventWhereInput = {
   NOT?: Prisma.EventWhereInput | Prisma.EventWhereInput[]
   id?: Prisma.StringFilter<"Event"> | string
   title?: Prisma.StringFilter<"Event"> | string
+  imageUrl?: Prisma.StringFilter<"Event"> | string
   description?: Prisma.StringFilter<"Event"> | string
   location?: Prisma.StringFilter<"Event"> | string
   startDate?: Prisma.DateTimeFilter<"Event"> | Date | string
@@ -212,6 +220,7 @@ export type EventWhereInput = {
 export type EventOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrder
   description?: Prisma.SortOrder
   location?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
@@ -227,6 +236,7 @@ export type EventWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.EventWhereInput[]
   NOT?: Prisma.EventWhereInput | Prisma.EventWhereInput[]
   title?: Prisma.StringFilter<"Event"> | string
+  imageUrl?: Prisma.StringFilter<"Event"> | string
   description?: Prisma.StringFilter<"Event"> | string
   location?: Prisma.StringFilter<"Event"> | string
   startDate?: Prisma.DateTimeFilter<"Event"> | Date | string
@@ -239,6 +249,7 @@ export type EventWhereUniqueInput = Prisma.AtLeast<{
 export type EventOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrder
   description?: Prisma.SortOrder
   location?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
@@ -256,6 +267,7 @@ export type EventScalarWhereWithAggregatesInput = {
   NOT?: Prisma.EventScalarWhereWithAggregatesInput | Prisma.EventScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Event"> | string
   title?: Prisma.StringWithAggregatesFilter<"Event"> | string
+  imageUrl?: Prisma.StringWithAggregatesFilter<"Event"> | string
   description?: Prisma.StringWithAggregatesFilter<"Event"> | string
   location?: Prisma.StringWithAggregatesFilter<"Event"> | string
   startDate?: Prisma.DateTimeWithAggregatesFilter<"Event"> | Date | string
@@ -267,6 +279,7 @@ export type EventScalarWhereWithAggregatesInput = {
 export type EventCreateInput = {
   id?: string
   title: string
+  imageUrl: string
   description: string
   location: string
   startDate: Date | string
@@ -279,6 +292,7 @@ export type EventCreateInput = {
 export type EventUncheckedCreateInput = {
   id?: string
   title: string
+  imageUrl: string
   description: string
   location: string
   startDate: Date | string
@@ -291,6 +305,7 @@ export type EventUncheckedCreateInput = {
 export type EventUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -303,6 +318,7 @@ export type EventUpdateInput = {
 export type EventUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -315,6 +331,7 @@ export type EventUncheckedUpdateInput = {
 export type EventCreateManyInput = {
   id?: string
   title: string
+  imageUrl: string
   description: string
   location: string
   startDate: Date | string
@@ -326,6 +343,7 @@ export type EventCreateManyInput = {
 export type EventUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -337,6 +355,7 @@ export type EventUpdateManyMutationInput = {
 export type EventUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -348,6 +367,7 @@ export type EventUncheckedUpdateManyInput = {
 export type EventCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrder
   description?: Prisma.SortOrder
   location?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
@@ -359,6 +379,7 @@ export type EventCountOrderByAggregateInput = {
 export type EventMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrder
   description?: Prisma.SortOrder
   location?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
@@ -370,6 +391,7 @@ export type EventMaxOrderByAggregateInput = {
 export type EventMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrder
   description?: Prisma.SortOrder
   location?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
@@ -400,6 +422,7 @@ export type EventUpdateOneRequiredWithoutParticipantsNestedInput = {
 export type EventCreateWithoutParticipantsInput = {
   id?: string
   title: string
+  imageUrl: string
   description: string
   location: string
   startDate: Date | string
@@ -411,6 +434,7 @@ export type EventCreateWithoutParticipantsInput = {
 export type EventUncheckedCreateWithoutParticipantsInput = {
   id?: string
   title: string
+  imageUrl: string
   description: string
   location: string
   startDate: Date | string
@@ -438,6 +462,7 @@ export type EventUpdateToOneWithWhereWithoutParticipantsInput = {
 export type EventUpdateWithoutParticipantsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -449,6 +474,7 @@ export type EventUpdateWithoutParticipantsInput = {
 export type EventUncheckedUpdateWithoutParticipantsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -491,6 +517,7 @@ export type EventCountOutputTypeCountParticipantsArgs<ExtArgs extends runtime.Ty
 export type EventSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
+  imageUrl?: boolean
   description?: boolean
   location?: boolean
   startDate?: boolean
@@ -504,6 +531,7 @@ export type EventSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type EventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
+  imageUrl?: boolean
   description?: boolean
   location?: boolean
   startDate?: boolean
@@ -515,6 +543,7 @@ export type EventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type EventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
+  imageUrl?: boolean
   description?: boolean
   location?: boolean
   startDate?: boolean
@@ -526,6 +555,7 @@ export type EventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type EventSelectScalar = {
   id?: boolean
   title?: boolean
+  imageUrl?: boolean
   description?: boolean
   location?: boolean
   startDate?: boolean
@@ -534,7 +564,7 @@ export type EventSelectScalar = {
   updatedAt?: boolean
 }
 
-export type EventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "location" | "startDate" | "endDate" | "createdAt" | "updatedAt", ExtArgs["result"]["event"]>
+export type EventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "imageUrl" | "description" | "location" | "startDate" | "endDate" | "createdAt" | "updatedAt", ExtArgs["result"]["event"]>
 export type EventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   participants?: boolean | Prisma.Event$participantsArgs<ExtArgs>
   _count?: boolean | Prisma.EventCountOutputTypeDefaultArgs<ExtArgs>
@@ -550,6 +580,7 @@ export type $EventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     title: string
+    imageUrl: string
     description: string
     location: string
     startDate: Date
@@ -982,6 +1013,7 @@ export interface Prisma__EventClient<T, Null = never, ExtArgs extends runtime.Ty
 export interface EventFieldRefs {
   readonly id: Prisma.FieldRef<"Event", 'String'>
   readonly title: Prisma.FieldRef<"Event", 'String'>
+  readonly imageUrl: Prisma.FieldRef<"Event", 'String'>
   readonly description: Prisma.FieldRef<"Event", 'String'>
   readonly location: Prisma.FieldRef<"Event", 'String'>
   readonly startDate: Prisma.FieldRef<"Event", 'DateTime'>
