@@ -21,8 +21,13 @@ export class AdminGuard implements CanActivate {
     if (!token) {
       throw new UnauthorizedException();
     }
-    const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
-    return payload.role === 'ADMIN';
+    try {
+      const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
+      return payload.role === 'ADMIN';
+    } catch (error) {
+      console.log('Unauthorized access attempt: ', error);
+      throw new UnauthorizedException('Unauthorized');
+    }
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {
