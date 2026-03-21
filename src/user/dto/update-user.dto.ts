@@ -47,7 +47,8 @@ export class UpdateUserDto {
   password?: string;
 
   @IsString()
-  avatarUrl?: string;
+  avatarUrl?: string =
+    'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
 
   @ApiPropertyOptional({
     type: 'string',
