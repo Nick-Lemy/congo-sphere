@@ -1,7 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsDateString,
-  IsNotEmpty,
   IsOptional,
   IsString,
   MaxLength,
@@ -13,7 +12,6 @@ export class UpdateEventDto {
     description: 'Title of the event',
     example: 'Tech Conference 2024 - Updated',
   })
-  @IsNotEmpty()
   @IsOptional()
   @IsString()
   @MaxLength(24)
@@ -41,7 +39,6 @@ export class UpdateEventDto {
     description: 'Start date of the event',
     example: '2023-10-15T00:00:00.000Z',
   })
-  @IsNotEmpty()
   @IsOptional()
   @IsDateString()
   startDate?: Date;
