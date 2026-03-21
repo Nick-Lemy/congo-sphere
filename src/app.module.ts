@@ -9,9 +9,11 @@ import { EventsModule } from './events/events.module';
 import { EventUsersService } from './event-users/event-users.service';
 import { EventUsersModule } from './event-users/event-users.module';
 import { FilesService } from './files/files.service';
+import { EmailsModule } from './emails/emails.module';
+import { TicketsModule } from './tickets/tickets.module';
 
 @Module({
-  imports: [UserModule, AuthModule, EventsModule, EventUsersModule],
+  imports: [UserModule, AuthModule, EventsModule, EventUsersModule, EmailsModule, TicketsModule],
   controllers: [AppController],
   providers: [
     AppService,
