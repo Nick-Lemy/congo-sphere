@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
-import { AdminGuard } from '../auth/auth.guard';
+import { AdminGuard } from '../auth/admin.guard';
 import { JwtService } from '@nestjs/jwt';
 
 describe('UserController', () => {
