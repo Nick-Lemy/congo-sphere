@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsDateString,
   IsNotEmpty,
@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 
 export class UpdateEventDto {
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Title of the event',
     example: 'Tech Conference 2024 - Updated',
   })
@@ -19,27 +19,25 @@ export class UpdateEventDto {
   @MaxLength(24)
   title?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Description of the event',
     example:
       'Join us for an exciting tech conference where industry leaders will share insights on the latest trends in technology. This event will feature keynote speakers, panel discussions, and networking opportunities.',
   })
-  @IsNotEmpty()
   @IsOptional()
   @IsString()
   @MinLength(30)
   description?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Location of the event',
     example: 'San Francisco, CA',
   })
-  @IsNotEmpty()
   @IsOptional()
   @IsString()
   location?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Start date of the event',
     example: '2023-10-15T00:00:00.000Z',
   })
@@ -48,23 +46,22 @@ export class UpdateEventDto {
   @IsDateString()
   startDate?: Date;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'End date of the event',
     example: '2023-10-15T00:00:00.000Z',
   })
-  @IsNotEmpty()
   @IsOptional()
   @IsDateString()
   endDate?: Date;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: 'string',
     format: 'binary',
     description: 'Event image file',
   })
   file?: any;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Detailed description of the event',
     example:
       'Join us for an exciting tech conference where industry leaders will share insights on the latest trends in technology. This event will feature keynote speakers, panel discussions, and networking opportunities.',
