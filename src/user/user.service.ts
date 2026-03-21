@@ -6,13 +6,13 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { FileService } from '../file/file.service';
+import { FilesService } from '../files/files.service';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly fileService: FileService,
+    private readonly filesService: FilesService,
   ) {}
 
   async create(createUserDto: CreateUserDto, file?: Express.Multer.File) {

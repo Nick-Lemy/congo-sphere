@@ -4,7 +4,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto, UserRole } from './dto/create-user.dto';
 import { ResponseUserDto } from './dto/response-user.dto';
 import { NotFoundException } from '@nestjs/common';
-import { FileService } from '../file/file.service';
+import { FilesService } from '../files/files.service';
 
 describe('UserService', () => {
   let service: UserService;
@@ -51,7 +51,7 @@ describe('UserService', () => {
       delete: jest.fn(),
     },
   };
-  const mockFileService = {
+  const mockFilesService = {
     uploadImage: jest.fn(),
   };
 
@@ -60,7 +60,7 @@ describe('UserService', () => {
       providers: [
         UserService,
         { provide: PrismaService, useValue: mockPrismaService },
-        { provide: FileService, useValue: mockFileService },
+        { provide: FilesService, useValue: mockFilesService },
       ],
     }).compile();
 

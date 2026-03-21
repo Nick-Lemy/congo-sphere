@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { EventsService } from './events.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { EventUsersService } from '../event-users/event-users.service';
-import { FileService } from '../file/file.service';
+import { FilesService } from '../files/files.service';
 
 describe('EventsService', () => {
   let service: EventsService;
@@ -24,7 +24,7 @@ describe('EventsService', () => {
     delete: jest.fn(),
   };
 
-  const mockFileService = {
+  const mockFilesService = {
     uploadImage: jest.fn(),
   };
 
@@ -41,8 +41,8 @@ describe('EventsService', () => {
           useValue: mockEventUsersService,
         },
         {
-          provide: FileService,
-          useValue: mockFileService,
+          provide: FilesService,
+          useValue: mockFilesService,
         },
       ],
     }).compile();

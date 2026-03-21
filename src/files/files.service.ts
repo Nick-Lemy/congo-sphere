@@ -3,7 +3,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import { randomUUID } from 'crypto';
 import { mkdir, unlink, writeFile } from 'fs/promises';
 @Injectable()
-export class FileService {
+export class FilesService {
   constructor() {
     cloudinary.config({
       cloud_name: process.env.CLOUDINARY_CLOUD_NAME,

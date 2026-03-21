@@ -10,14 +10,14 @@ import { UpdateEventDto } from './dto/update-event.dto';
 import { JwtPayload } from '../common/types/jtw.type';
 import { EventUsersService } from '../event-users/event-users.service';
 import { EventRole } from '../generated/prisma/enums';
-import { FileService } from '../file/file.service';
+import { FilesService } from '../files/files.service';
 
 @Injectable()
 export class EventsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly eventUsersService: EventUsersService,
-    private readonly fileService: FileService,
+    private readonly filesService: FilesService,
   ) {}
 
   async create(

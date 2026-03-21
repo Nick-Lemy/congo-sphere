@@ -7,9 +7,9 @@ import { JwtModule } from '@nestjs/jwt';
 
 import 'dotenv/config';
 import { PrismaService } from '../prisma/prisma.service';
-import { FileService } from '../file/file.service';
+import { FilesService } from '../files/files.service';
 @Module({
-  providers: [AuthService, UserService, PrismaService, FileService],
+  providers: [AuthService, UserService, PrismaService, FilesService],
   controllers: [AuthController],
   imports: [
     UserModule,

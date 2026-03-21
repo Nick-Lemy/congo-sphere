@@ -4,10 +4,10 @@ import { EventsController } from './events.controller';
 import { PrismaService } from '../prisma/prisma.service';
 import { EventUsersModule } from '../event-users/event-users.module';
 import { EventUsersService } from '../event-users/event-users.service';
-import { FileService } from '../file/file.service';
+import { FilesService } from '../files/files.service';
 
 @Module({
-  providers: [EventsService, PrismaService, EventUsersService, FileService],
+  providers: [EventsService, PrismaService, EventUsersService, FilesService],
   controllers: [EventsController],
   imports: [EventUsersModule],
 })
