@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, UserRole } from './dto/create-user.dto';
 import { ResponseUserDto } from './dto/response-user.dto';
 import { NotFoundException } from '@nestjs/common';
 import { FileService } from '../file/file.service';
@@ -13,6 +13,8 @@ describe('UserService', () => {
     name: 'Random User',
     password: 'Ramdom#1234',
     username: 'ramdom_user2025',
+    avatarUrl: '',
+    role: UserRole.USER,
   };
   const userOne: ResponseUserDto = {
     id: '1',
