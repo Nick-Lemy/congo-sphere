@@ -51,6 +51,7 @@ describe('UserService', () => {
       delete: jest.fn(),
     },
   };
+
   const mockFilesService = {
     uploadImage: jest.fn(),
   };
@@ -106,7 +107,7 @@ describe('UserService', () => {
     });
     it('should throw NotFoundException when user with given id does not exist', async () => {
       mockPrismaService.user.findUnique.mockRejectedValue(
-        new NotFoundException(),
+        new NotFoundException('User Not Found'),
       );
       await expect(service.findOne('random-uuid')).rejects.toThrow(
         NotFoundException,
@@ -122,7 +123,7 @@ describe('UserService', () => {
     });
     it('should throw NotFoundException when user with given email does not exist', async () => {
       mockPrismaService.user.findUnique.mockRejectedValue(
-        new NotFoundException(),
+        new NotFoundException('User Not Found'),
       );
       await expect(
         service.findOneByEmail('unexistant.user@example.com'),
@@ -139,7 +140,7 @@ describe('UserService', () => {
     });
     it('should throw NotFoundException when user with given username does not exist', async () => {
       mockPrismaService.user.findUnique.mockRejectedValue(
-        new NotFoundException(),
+        new NotFoundException('User Not Found'),
       );
       await expect(
         service.findOneByUsername('unexistant.user@example.com'),
@@ -152,19 +153,21 @@ describe('UserService', () => {
       name: 'Random Guy',
     };
     it('should update and return the updated user', async () => {
+      mockPrismaService.user.findUnique.mockResolvedValue(userOne);
       mockPrismaService.user.update.mockResolvedValue({
         ...updatedUser,
         ...userOne,
       });
+
       expect(await service.update(userOne.id, updatedUser)).toEqual({
         ...updatedUser,
         ...userOne,
       });
     });
   });
-
   describe('delete', () => {
     it('should delete a user and return the deleted user', async () => {
+      mockPrismaService.user.findUnique.mockResolvedValue(userOne);
       mockPrismaService.user.delete.mockResolvedValue(userOne);
       expect(await service.delete(userOne.id)).toEqual(userOne);
     });
