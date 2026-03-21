@@ -1,7 +1,6 @@
 import {
   ConflictException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
@@ -25,26 +24,21 @@ export class EventsService {
     createEventDto: CreateEventDto,
     file: Express.Multer.File,
   ) {
-    try {
-      const imageUrl = await this.filesService.uploadImage(file);
-      const newEvent = await this.prisma.$transaction(async (tx) => {
-        const event = await tx.event.create({
-          data: { ...createEventDto, imageUrl },
-        });
-        await tx.eventUser.create({
-          data: {
-            eventId: event.id,
-            userId: currentUser.sub,
-            role: EventRole.HOST,
-          },
-        });
-        return event;
+    const imageUrl = await this.filesService.uploadImage(file);
+    const event = await this.prisma.$transaction(async (tx) => {
+      const event = await tx.event.create({
+        data: { ...createEventDto, imageUrl },
       });
-      return newEvent;
-    } catch (error) {
-      console.error('Failed to create event:', error);
-      throw new InternalServerErrorException('Failed to create event');
-    }
+      await tx.eventUser.create({
+        data: {
+          eventId: event.id,
+          userId: currentUser.sub,
+          role: EventRole.HOST,
+        },
+      });
+      return event;
+    });
+    return event;
   }
 
   findAll() {
@@ -65,21 +59,16 @@ export class EventsService {
     updateEventDto: UpdateEventDto,
     file?: Express.Multer.File,
   ) {
-    try {
-      const event = await this.findOne(id);
-      if (!event) throw new NotFoundException();
-      if (file) {
-        const imageUrl = await this.filesService.uploadImage(file);
-        updateEventDto.imageUrl = imageUrl;
-      }
-      return this.prisma.event.update({
-        where: { id: event.id },
-        data: updateEventDto,
-      });
-    } catch (error) {
-      console.error('Failed to update event:', error);
-      throw new InternalServerErrorException('Failed to update event');
+    const event = await this.findOne(id);
+    if (!event) throw new NotFoundException();
+    if (file) {
+      const imageUrl = await this.filesService.uploadImage(file);
+      updateEventDto.imageUrl = imageUrl;
     }
+    return this.prisma.event.update({
+      where: { id: event.id },
+      data: updateEventDto,
+    });
   }
 
   async delete(id: string) {
@@ -89,43 +78,31 @@ export class EventsService {
   }
 
   async registerToEvent(eventId: string, user: JwtPayload) {
-    try {
-      const event = await this.findOne(eventId);
-      if (!event) {
-        throw new NotFoundException('Event not found!');
-      }
-
-      const attendee = await this.eventUsersService.create({
-        eventId,
-        userId: user.sub,
-        role: EventRole.ATTENDEE,
-      });
-
-      return attendee;
-    } catch (error) {
-      console.warn("Couldn't register user to event: ", error);
-      throw new InternalServerErrorException("User didn't register to event");
+    const event = await this.findOne(eventId);
+    if (!event) {
+      throw new NotFoundException('Event not found!');
     }
+
+    const attendee = await this.eventUsersService.create({
+      eventId,
+      userId: user.sub,
+      role: EventRole.ATTENDEE,
+    });
+
+    return attendee;
   }
 
   async cancelRegistration(eventId: string, user: JwtPayload) {
-    try {
-      const attendee = await this.prisma.eventUser.findFirst({
-        where: { eventId, userId: user.sub },
-      });
+    const attendee = await this.prisma.eventUser.findFirst({
+      where: { eventId, userId: user.sub },
+    });
 
-      if (!attendee) throw new NotFoundException('Attendee not found!');
-      if (attendee.role === EventRole.HOST)
-        throw new ConflictException("Admin Can't Cancell registration");
+    if (!attendee) throw new NotFoundException('Attendee not found!');
+    if (attendee.role === EventRole.HOST)
+      throw new ConflictException("Admin Can't Cancell registration");
 
-      return this.prisma.eventUser.delete({
-        where: { userId_eventId: { userId: user.sub, eventId } },
-      });
-    } catch (error) {
-      console.warn('Error while Cancelling registration: ', error);
-      throw new InternalServerErrorException(
-        'Impossible to cancel Registration',
-      );
-    }
+    return this.prisma.eventUser.delete({
+      where: { userId_eventId: { userId: user.sub, eventId } },
+    });
   }
 }
