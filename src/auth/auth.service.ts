@@ -55,13 +55,13 @@ export class AuthService {
     };
   }
 
-  async hashPassword(password: string) {
+  private async hashPassword(password: string) {
     const salt = await genSalt();
     const hashedPassword = await hash(password, salt);
     return hashedPassword;
   }
 
-  async comparePassword(
+  private async comparePassword(
     humanReadablePassword: string,
     hashedPassword: string,
   ): Promise<boolean> {
