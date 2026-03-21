@@ -16,11 +16,11 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async register(createUserDto: CreateUserDto) {
+  async register(createUserDto: CreateUserDto, file?: Express.Multer.File) {
     const { password } = createUserDto;
     const hashedPassword = await this.hashPassword(password);
     createUserDto.password = hashedPassword;
-    return this.userService.create(createUserDto);
+    return this.userService.create(createUserDto, file);
   }
 
   async getCurrentUser(userId: string) {

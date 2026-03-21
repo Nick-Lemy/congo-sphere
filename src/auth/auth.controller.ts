@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Post,
+  UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -11,6 +12,7 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import {
   ApiBearerAuth,
+  ApiConsumes,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -20,6 +22,7 @@ import { CurrentUser } from './current-user.decorator';
 import { type JwtPayload } from '../common/types/jtw.type';
 import { AuthGuard } from './auth.guard';
 import { SerializeInterceptor } from '../common/interceptors/serialize.interceptor';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -43,10 +46,15 @@ export class AuthController {
     status: 500,
     description: 'Internal Server Error',
   })
+  @ApiConsumes('multipart/form-data')
   @Post('register')
+  @UseInterceptors(FileInterceptor('file'))
   @UseInterceptors(new SerializeInterceptor(ResponseUserDto))
-  register(@Body() createUserDto: CreateUserDto) {
-    return this.authService.register(createUserDto);
+  register(
+    @Body() createUserDto: CreateUserDto,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    return this.authService.register(createUserDto, file);
   }
 
   @ApiOperation({

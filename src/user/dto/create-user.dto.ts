@@ -49,12 +49,7 @@ export class CreateUserDto {
   @IsStrongPassword()
   password!: string;
 
-  @ApiPropertyOptional({
-    description: 'Role of the user (USER or ADMIN)',
-    example: 'USER',
-    enum: UserRole,
-  })
-  role?: UserRole = UserRole.ADMIN;
+  role: UserRole = UserRole.USER;
 
   @IsString()
   avatarUrl?: string =
