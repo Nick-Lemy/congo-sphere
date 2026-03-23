@@ -15,7 +15,10 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto, file?: Express.Multer.File) {
     if (file) {
-      const avatarUrl = await this.filesService.uploadImage(file);
+      const avatarUrl = await this.filesService.uploadImage(
+        file.buffer,
+        file.originalname,
+      );
       createUserDto.avatarUrl = avatarUrl;
     }
     const newUser = await this.prisma.user.create({

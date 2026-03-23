@@ -11,6 +11,7 @@ import { EventUsersService } from '../event-users/event-users.service';
 import { EventRole } from '../generated/prisma/enums';
 import { FilesService } from '../files/files.service';
 import { EmailsService } from '../emails/emails.service';
+import { TicketsService } from '../tickets/tickets.service';
 
 @Injectable()
 export class EventsService {
@@ -19,6 +20,7 @@ export class EventsService {
     private readonly eventUsersService: EventUsersService,
     private readonly filesService: FilesService,
     private readonly emailsService: EmailsService,
+    private readonly ticketsService: TicketsService,
   ) {}
 
   async create(
@@ -26,7 +28,10 @@ export class EventsService {
     createEventDto: CreateEventDto,
     file: Express.Multer.File,
   ) {
-    const imageUrl = await this.filesService.uploadImage(file);
+    const imageUrl = await this.filesService.uploadImage(
+      file.buffer,
+      file.originalname,
+    );
     const event = await this.prisma.$transaction(async (tx) => {
       const event = await tx.event.create({
         data: { ...createEventDto, imageUrl },
@@ -66,7 +71,10 @@ export class EventsService {
   ) {
     const event = await this.findOne(id);
     if (file) {
-      const imageUrl = await this.filesService.uploadImage(file);
+      const imageUrl = await this.filesService.uploadImage(
+        file.buffer,
+        file.originalname,
+      );
       updateEventDto.imageUrl = imageUrl;
     }
     return this.prisma.event.update({
@@ -89,11 +97,39 @@ export class EventsService {
         role: EventRole.ATTENDEE,
       });
 
+      const host = await this.prisma.eventUser.findFirst({
+        where: { eventId: event.id, role: 'HOST' },
+      });
+
+      if (!host) throw new ConflictException();
+
+      const hostUser = await this.prisma.user.findUnique({
+        where: { id: host.userId },
+      });
+
+      const attendeeUser = await this.prisma.user.findUnique({
+        where: { id: attendee.userId },
+      });
+
+      if (!attendeeUser) throw new NotFoundException('attendee not found');
+      if (!hostUser) throw new NotFoundException('host not found');
+
+      const ticket = await this.ticketsService.createEventPdfTicket(
+        event,
+        hostUser,
+        attendeeUser,
+      );
+      const ticketPath = await this.filesService.uploadImage(
+        ticket,
+        `${event.title}-ticket.pdf`,
+      );
+
       await this.emailsService.sendEventRegistrationEmail(
         user.email,
         event.title,
         user.username,
         event.id,
+        [{ filename: 'ticket.pdf', path: ticketPath }],
       );
       return attendee;
     } catch (error) {

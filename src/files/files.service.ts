@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
 import { randomUUID } from 'crypto';
 import { mkdir, unlink, writeFile } from 'fs/promises';
+import Stream from 'stream';
 
 @Injectable()
 export class FilesService {
@@ -13,11 +14,19 @@ export class FilesService {
     });
   }
 
-  async uploadImage(file: Express.Multer.File) {
-    const tmpPath = `./tmp/${randomUUID()}-${file.originalname}`;
+  async uploadImage(
+    fileBuffer:
+      | string
+      | NodeJS.ArrayBufferView
+      | Iterable<string | NodeJS.ArrayBufferView>
+      | AsyncIterable<string | NodeJS.ArrayBufferView>
+      | Stream,
+    fileName: string,
+  ) {
+    const tmpPath = `./tmp/${randomUUID()}-${fileName}`;
     try {
       await mkdir('./tmp', { recursive: true });
-      await writeFile(tmpPath, file.buffer);
+      await writeFile(tmpPath, fileBuffer);
 
       const { secure_url } = await cloudinary.uploader.upload(tmpPath);
       return secure_url;

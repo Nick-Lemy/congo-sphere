@@ -92,6 +92,7 @@ export class EmailsService {
     eventName: string,
     username: string,
     eventId: string,
+    attachements?: EmailAttachment[],
   ) {
     const subject = `Confirmation d'inscription à ${eventName}`;
     const html = this.eventRegistrationEmailTemplate(
@@ -99,7 +100,7 @@ export class EmailsService {
       username,
       `${this.WEBSITE_URL}/events/${eventId}`,
     );
-    await this.sendEmail(to, subject, html);
+    await this.sendEmail(to, subject, html, attachements);
   }
 
   private async sendEmail(
