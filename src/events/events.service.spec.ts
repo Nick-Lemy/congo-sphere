@@ -4,6 +4,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { EventUsersService } from '../event-users/event-users.service';
 import { FilesService } from '../files/files.service';
 import { EmailsService } from '../emails/emails.service';
+import { TicketsService } from '../tickets/tickets.service';
 
 describe('EventsService', () => {
   let service: EventsService;
@@ -33,6 +34,9 @@ describe('EventsService', () => {
     sendEventRegistrationEmail: jest.fn(),
   };
 
+  const mockTicketsService = {
+    createEventPdfTicket: jest.fn(),
+  };
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -52,6 +56,10 @@ describe('EventsService', () => {
         {
           provide: EmailsService,
           useValue: mockEmailsService,
+        },
+        {
+          provide: TicketsService,
+          useValue: mockTicketsService,
         },
       ],
     }).compile();
