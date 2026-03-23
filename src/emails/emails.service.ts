@@ -7,7 +7,7 @@ export class EmailsService {
   constructor(
     private readonly emailTransporter = this.createEmailTransporter(),
   ) {}
-  private WEBSITE_URL = 'www.congo-sphere.com';
+  private readonly WEBSITE_URL = 'www.congo-sphere.com';
   private createEmailTransporter() {
     return createTransport({
       service: 'Gmail',
