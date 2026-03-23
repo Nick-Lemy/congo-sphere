@@ -3,12 +3,14 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FilesService } from '../files/files.service';
+import { EmailsService } from '../emails/emails.service';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly filesService: FilesService,
+    private readonly emailService: EmailsService,
   ) {}
 
   async create(createUserDto: CreateUserDto, file?: Express.Multer.File) {
@@ -16,9 +18,15 @@ export class UserService {
       const avatarUrl = await this.filesService.uploadImage(file);
       createUserDto.avatarUrl = avatarUrl;
     }
-    return this.prisma.user.create({
+    const newUser = await this.prisma.user.create({
       data: createUserDto,
     });
+    try {
+      await this.emailService.sendWelcomeEmail(newUser.email, newUser.name);
+    } catch (error) {
+      console.error('Error sending welcome email:', error);
+    }
+    return newUser;
   }
 
   async findAll() {
