@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { createTransport } from 'nodemailer';
+import { EmailAttachment } from '../common/types/email.type';
 
 @Injectable()
 export class EmailsService {
@@ -21,7 +22,7 @@ export class EmailsService {
     to: string,
     subject: string,
     html: string,
-    attachments?: { filename: string; path: string }[],
+    attachments?: EmailAttachment[],
   ) {
     const transporter = this.createEmailTransporter();
     await transporter.sendMail({
