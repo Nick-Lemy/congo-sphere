@@ -8,6 +8,7 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import 'dotenv/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { FilesService } from '../files/files.service';
+import { EmailsModule } from '../emails/emails.module';
 @Module({
   providers: [
     AuthService,
@@ -18,6 +19,7 @@ import { FilesService } from '../files/files.service';
   ],
   controllers: [AuthController],
   imports: [
+    EmailsModule,
     UserModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
