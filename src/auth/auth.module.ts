@@ -3,13 +3,19 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UserService } from '../user/user.service';
 import { UserModule } from '../user/user.module';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 
 import 'dotenv/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { FilesService } from '../files/files.service';
 @Module({
-  providers: [AuthService, UserService, PrismaService, FilesService],
+  providers: [
+    AuthService,
+    UserService,
+    PrismaService,
+    FilesService,
+    JwtService,
+  ],
   controllers: [AuthController],
   imports: [
     UserModule,

@@ -5,6 +5,7 @@ import { CreateUserDto, UserRole } from './dto/create-user.dto';
 import { ResponseUserDto } from './dto/response-user.dto';
 import { NotFoundException } from '@nestjs/common';
 import { FilesService } from '../files/files.service';
+import { EmailsService } from '../emails/emails.service';
 
 describe('UserService', () => {
   let service: UserService;
@@ -56,12 +57,17 @@ describe('UserService', () => {
     uploadImage: jest.fn(),
   };
 
+  const mockEmailService = {
+    sendWelcomeEmail: jest.fn(),
+    sendEventRegistrationEmail: jest.fn(),
+  };
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserService,
         { provide: PrismaService, useValue: mockPrismaService },
         { provide: FilesService, useValue: mockFilesService },
+        { provide: EmailsService, useValue: mockEmailService },
       ],
     }).compile();
 

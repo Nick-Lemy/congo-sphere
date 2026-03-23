@@ -5,9 +5,7 @@ import 'dotenv/config';
 
 @Injectable()
 export class EmailsService {
-  constructor(
-    private readonly emailTransporter = this.createEmailTransporter(),
-  ) {}
+  constructor() {}
   private readonly WEBSITE_URL = 'www.congo-sphere.com';
   private createEmailTransporter() {
     return createTransport({
@@ -112,7 +110,7 @@ export class EmailsService {
     attachments?: EmailAttachment[],
   ) {
     try {
-      const transporter = this.emailTransporter;
+      const transporter = this.createEmailTransporter();
       await transporter.sendMail({
         from: process.env.EMAIL_USER,
         to,
