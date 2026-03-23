@@ -7,6 +7,7 @@ export class EmailsService {
   constructor(
     private readonly emailTransporter = this.createEmailTransporter(),
   ) {}
+  private WEBSITE_URL = 'www.congo-sphere.com';
   private createEmailTransporter() {
     return createTransport({
       service: 'Gmail',
@@ -42,7 +43,7 @@ export class EmailsService {
     <div class="content">
       <h1>Bonjour ${username},</h1>
       <p>Nous sommes absolument ravis de vous compter parmi nous ! Préparez-vous à explorer, échanger et profiter de tout ce que nous avons à offrir.</p>
-      <a href="www.congo-sphere.com" class="btn">Commencer maintenant</a>
+      <a href="${this.WEBSITE_URL}" class="btn">Commencer maintenant</a>
     </div>
   </div>
 </body>
@@ -92,9 +93,14 @@ export class EmailsService {
     to: string,
     eventName: string,
     username: string,
+    eventId: string,
   ) {
     const subject = `Confirmation d'inscription à ${eventName}`;
-    const html = this.eventRegistrationEmailTemplate(eventName, username);
+    const html = this.eventRegistrationEmailTemplate(
+      eventName,
+      username,
+      `${this.WEBSITE_URL}/events/${eventId}`,
+    );
     await this.sendEmail(to, subject, html);
   }
 
