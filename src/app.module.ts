@@ -11,9 +11,20 @@ import { EventUsersModule } from './event-users/event-users.module';
 import { FilesService } from './files/files.service';
 import { EmailsModule } from './emails/emails.module';
 import { TicketsModule } from './tickets/tickets.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [UserModule, AuthModule, EventsModule, EventUsersModule, EmailsModule, TicketsModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true, // Makes ConfigService available everywhere
+    }),
+    UserModule,
+    AuthModule,
+    EventsModule,
+    EventUsersModule,
+    EmailsModule,
+    TicketsModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,

@@ -1,7 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { createTransport } from 'nodemailer';
 import { EmailAttachment } from '../common/types/email.type';
-import 'dotenv/config';
 
 @Injectable()
 export class EmailsService {
