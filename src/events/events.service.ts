@@ -10,6 +10,7 @@ import { JwtPayload } from '../common/types/jtw.type';
 import { EventUsersService } from '../event-users/event-users.service';
 import { EventRole } from '../generated/prisma/enums';
 import { FilesService } from '../files/files.service';
+import { EmailsService } from '../emails/emails.service';
 
 @Injectable()
 export class EventsService {
@@ -17,6 +18,7 @@ export class EventsService {
     private readonly prisma: PrismaService,
     private readonly eventUsersService: EventUsersService,
     private readonly filesService: FilesService,
+    private readonly emailsService: EmailsService,
   ) {}
 
   async create(
@@ -47,11 +49,14 @@ export class EventsService {
     });
   }
 
-  findOne(id: string) {
-    return this.prisma.event.findUnique({
+  async findOne(id: string) {
+    const event = await this.prisma.event.findUnique({
       where: { id },
       include: { participants: true },
     });
+
+    if (!event) throw new NotFoundException('Event not found!');
+    return event;
   }
 
   async update(
@@ -60,7 +65,6 @@ export class EventsService {
     file?: Express.Multer.File,
   ) {
     const event = await this.findOne(id);
-    if (!event) throw new NotFoundException();
     if (file) {
       const imageUrl = await this.filesService.uploadImage(file);
       updateEventDto.imageUrl = imageUrl;
@@ -73,23 +77,29 @@ export class EventsService {
 
   async delete(id: string) {
     const event = await this.findOne(id);
-    if (!event) throw new NotFoundException();
     return this.prisma.event.delete({ where: { id: event.id } });
   }
 
   async registerToEvent(eventId: string, user: JwtPayload) {
     const event = await this.findOne(eventId);
-    if (!event) {
-      throw new NotFoundException('Event not found!');
+    try {
+      const attendee = await this.eventUsersService.create({
+        eventId: event.id,
+        userId: user.sub,
+        role: EventRole.ATTENDEE,
+      });
+
+      await this.emailsService.sendEventRegistrationEmail(
+        user.email,
+        event.title,
+        user.username,
+        event.id,
+      );
+      return attendee;
+    } catch (error) {
+      console.error('Error registering to event:', error);
+      throw new ConflictException('User is already registered for this event');
     }
-
-    const attendee = await this.eventUsersService.create({
-      eventId,
-      userId: user.sub,
-      role: EventRole.ATTENDEE,
-    });
-
-    return attendee;
   }
 
   async cancelRegistration(eventId: string, user: JwtPayload) {
