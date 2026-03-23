@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { createTransport } from 'nodemailer';
 import { EmailAttachment } from '../common/types/email.type';
+import 'dotenv/config';
 
 @Injectable()
 export class EmailsService {
@@ -11,7 +12,7 @@ export class EmailsService {
   private createEmailTransporter() {
     return createTransport({
       service: 'Gmail',
-      host: process.env.EMAIL_HOST,
+      host: process.env.EEMAIL_MAIL_HOST,
       port: Number(process.env.EMAIL_PORT),
       secure: true,
       auth: {
