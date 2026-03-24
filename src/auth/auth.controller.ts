@@ -125,6 +125,23 @@ export class AuthController {
     return this.authService.forgotPassword(forgotPasswordDto);
   }
 
+  @ApiOperation({
+    summary: 'Get current user information',
+    description: 'Retrieve information about the currently authenticated user.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Password reset successfully!',
+    type: ResponseUserDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'User not found',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @Post('reset-password')
