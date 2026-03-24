@@ -112,9 +112,10 @@ export class EventsController {
   update(
     @Param('id') id: string,
     @Body() updateEventDto: UpdateEventDto,
+    @CurrentUser() user: JwtPayload,
     @UploadedFile() file?: Express.Multer.File,
   ) {
-    return this.eventsService.update(id, updateEventDto, file);
+    return this.eventsService.update(id, updateEventDto, user, file);
   }
 
   @ApiOperation({
@@ -172,7 +173,7 @@ export class EventsController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @Delete(':id')
-  delete(@Param('id') id: string) {
-    return this.eventsService.delete(id);
+  delete(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
+    return this.eventsService.delete(id, user);
   }
 }

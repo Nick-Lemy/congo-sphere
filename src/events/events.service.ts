@@ -69,9 +69,15 @@ export class EventsService {
   async update(
     id: string,
     updateEventDto: UpdateEventDto,
+    user: JwtPayload,
     file?: Express.Multer.File,
   ) {
     const event = await this.findOne(id);
+    const host = await this.eventUsersService.findHost(id);
+    if (host.userId !== user.sub || user.role !== 'ADMIN')
+      throw new ConflictException(
+        'Only the host and admin can update the event!',
+      );
     if (file) {
       const imageUrl = await this.filesService.uploadImage(
         file.buffer,
@@ -85,8 +91,14 @@ export class EventsService {
     });
   }
 
-  async delete(id: string) {
+  async delete(id: string, user: JwtPayload) {
     const event = await this.findOne(id);
+    const host = await this.eventUsersService.findHost(id);
+    if (host.userId !== user.sub || user.role !== 'ADMIN')
+      throw new ConflictException(
+        'Only the host and admin can delete the event!',
+      );
+
     return this.prisma.event.delete({ where: { id: event.id } });
   }
 
