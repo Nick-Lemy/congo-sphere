@@ -81,6 +81,34 @@ export class EmailsService {
 </html>`;
   };
 
+  private forgotPasswordEmailTemplate = (resetPasswordLink: string): string => {
+    return `<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0; }
+  .container { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.05); text-align: center; padding: 40px 20px; position: relative; }
+  .header { color: #FF5722; font-size: 28px; font-weight: bold; margin-bottom: 20px; }
+  h1 { color: #333; font-size: 24px; margin-bottom: 10px; }
+  p { color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 20px; }
+  .btn { display: inline-block; padding: 14px 32px; background-color: #4CAF50; color: #ffffff !important; text-decoration: none; border-radius: 30px; font-weight: bold; font-size: 16px; margin-top: 20px; box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3); }
+  .content { position: relative; z-index: 1; margin-top: 20px;}
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">🔒 Réinitialisation de mot de passe</div>
+    <div class="content">
+      <h1>Bonjour,</h1>
+      <p>Vous avez demandé la réinitialisation de votre mot de passe pour votre compte Congo Sphere. Cliquez sur le bouton ci-dessous pour créer un nouveau mot de passe. Ce lien expirera bientôt.</p>
+      <a href="${resetPasswordLink}" class="btn">Réinitialiser le mot de passe</a>
+      <p style="margin-top: 30px; font-size: 14px;">Si vous n'avez pas demandé cette réinitialisation, vous pouvez ignorer cet e-mail en toute sécurité.</p>
+    </div>
+  </div>
+</body>
+</html>`;
+  };
+
   async sendWelcomeEmail(to: string, username: string) {
     const subject = 'Bienvenue sur Congo Sphere !';
     const html = this.welcomeEmailTemplate(username);
@@ -101,6 +129,14 @@ export class EmailsService {
       `${this.WEBSITE_URL}/events/${eventId}`,
     );
     await this.sendEmail(to, subject, html, attachements);
+  }
+
+  async sendForgotPasswordEmail(accessToken: string, userEmail: string) {
+    const subject = `Reset Password - Congo Sphere`;
+    const html = this.forgotPasswordEmailTemplate(
+      `${this.WEBSITE_URL}/forgot-password?token=${accessToken}`,
+    );
+    await this.sendEmail(userEmail, subject, html);
   }
 
   private async sendEmail(
