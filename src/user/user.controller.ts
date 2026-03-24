@@ -20,6 +20,7 @@ import {
   ApiOperation,
   ApiParam,
   ApiResponse,
+  ApiTags,
 } from '@nestjs/swagger';
 import { SerializeInterceptor } from '../common/interceptors/serialize.interceptor';
 import { ResponseUserDto } from './dto/response-user.dto';
@@ -27,6 +28,7 @@ import { AuthGuard } from '../auth/auth.guard';
 import { AdminGuard } from '../auth/admin.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 
+@ApiTags('User Management - Admin Only')
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
 @UseGuards(AdminGuard)
