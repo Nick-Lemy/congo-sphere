@@ -6,10 +6,11 @@ import { EventUsersModule } from '../event-users/event-users.module';
 import { FilesService } from '../files/files.service';
 import { EmailsModule } from '../emails/emails.module';
 import { TicketsModule } from '../tickets/tickets.module';
+import { UserModule } from '../user/user.module';
 
 @Module({
   providers: [EventsService, PrismaService, FilesService],
   controllers: [EventsController],
-  imports: [EventUsersModule, EmailsModule, TicketsModule],
+  imports: [EventUsersModule, EmailsModule, TicketsModule, UserModule],
 })
 export class EventsModule {}
