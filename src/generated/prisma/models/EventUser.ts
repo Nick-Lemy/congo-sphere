@@ -29,6 +29,7 @@ export type EventUserMinAggregateOutputType = {
   eventId: string | null
   role: $Enums.EventRole | null
   joinedAt: Date | null
+  ticketUrl: string | null
 }
 
 export type EventUserMaxAggregateOutputType = {
@@ -36,6 +37,7 @@ export type EventUserMaxAggregateOutputType = {
   eventId: string | null
   role: $Enums.EventRole | null
   joinedAt: Date | null
+  ticketUrl: string | null
 }
 
 export type EventUserCountAggregateOutputType = {
@@ -43,6 +45,7 @@ export type EventUserCountAggregateOutputType = {
   eventId: number
   role: number
   joinedAt: number
+  ticketUrl: number
   _all: number
 }
 
@@ -52,6 +55,7 @@ export type EventUserMinAggregateInputType = {
   eventId?: true
   role?: true
   joinedAt?: true
+  ticketUrl?: true
 }
 
 export type EventUserMaxAggregateInputType = {
@@ -59,6 +63,7 @@ export type EventUserMaxAggregateInputType = {
   eventId?: true
   role?: true
   joinedAt?: true
+  ticketUrl?: true
 }
 
 export type EventUserCountAggregateInputType = {
@@ -66,6 +71,7 @@ export type EventUserCountAggregateInputType = {
   eventId?: true
   role?: true
   joinedAt?: true
+  ticketUrl?: true
   _all?: true
 }
 
@@ -146,6 +152,7 @@ export type EventUserGroupByOutputType = {
   eventId: string
   role: $Enums.EventRole
   joinedAt: Date
+  ticketUrl: string
   _count: EventUserCountAggregateOutputType | null
   _min: EventUserMinAggregateOutputType | null
   _max: EventUserMaxAggregateOutputType | null
@@ -174,6 +181,7 @@ export type EventUserWhereInput = {
   eventId?: Prisma.StringFilter<"EventUser"> | string
   role?: Prisma.EnumEventRoleFilter<"EventUser"> | $Enums.EventRole
   joinedAt?: Prisma.DateTimeFilter<"EventUser"> | Date | string
+  ticketUrl?: Prisma.StringFilter<"EventUser"> | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   event?: Prisma.XOR<Prisma.EventScalarRelationFilter, Prisma.EventWhereInput>
 }
@@ -183,6 +191,7 @@ export type EventUserOrderByWithRelationInput = {
   eventId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
+  ticketUrl?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   event?: Prisma.EventOrderByWithRelationInput
 }
@@ -196,6 +205,7 @@ export type EventUserWhereUniqueInput = Prisma.AtLeast<{
   eventId?: Prisma.StringFilter<"EventUser"> | string
   role?: Prisma.EnumEventRoleFilter<"EventUser"> | $Enums.EventRole
   joinedAt?: Prisma.DateTimeFilter<"EventUser"> | Date | string
+  ticketUrl?: Prisma.StringFilter<"EventUser"> | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   event?: Prisma.XOR<Prisma.EventScalarRelationFilter, Prisma.EventWhereInput>
 }, "userId_eventId">
@@ -205,6 +215,7 @@ export type EventUserOrderByWithAggregationInput = {
   eventId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
+  ticketUrl?: Prisma.SortOrder
   _count?: Prisma.EventUserCountOrderByAggregateInput
   _max?: Prisma.EventUserMaxOrderByAggregateInput
   _min?: Prisma.EventUserMinOrderByAggregateInput
@@ -218,11 +229,13 @@ export type EventUserScalarWhereWithAggregatesInput = {
   eventId?: Prisma.StringWithAggregatesFilter<"EventUser"> | string
   role?: Prisma.EnumEventRoleWithAggregatesFilter<"EventUser"> | $Enums.EventRole
   joinedAt?: Prisma.DateTimeWithAggregatesFilter<"EventUser"> | Date | string
+  ticketUrl?: Prisma.StringWithAggregatesFilter<"EventUser"> | string
 }
 
 export type EventUserCreateInput = {
   role: $Enums.EventRole
   joinedAt?: Date | string
+  ticketUrl?: string
   user: Prisma.UserCreateNestedOneWithoutEventUsersInput
   event: Prisma.EventCreateNestedOneWithoutParticipantsInput
 }
@@ -232,11 +245,13 @@ export type EventUserUncheckedCreateInput = {
   eventId: string
   role: $Enums.EventRole
   joinedAt?: Date | string
+  ticketUrl?: string
 }
 
 export type EventUserUpdateInput = {
   role?: Prisma.EnumEventRoleFieldUpdateOperationsInput | $Enums.EventRole
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ticketUrl?: Prisma.StringFieldUpdateOperationsInput | string
   user?: Prisma.UserUpdateOneRequiredWithoutEventUsersNestedInput
   event?: Prisma.EventUpdateOneRequiredWithoutParticipantsNestedInput
 }
@@ -246,6 +261,7 @@ export type EventUserUncheckedUpdateInput = {
   eventId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEventRoleFieldUpdateOperationsInput | $Enums.EventRole
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ticketUrl?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type EventUserCreateManyInput = {
@@ -253,11 +269,13 @@ export type EventUserCreateManyInput = {
   eventId: string
   role: $Enums.EventRole
   joinedAt?: Date | string
+  ticketUrl?: string
 }
 
 export type EventUserUpdateManyMutationInput = {
   role?: Prisma.EnumEventRoleFieldUpdateOperationsInput | $Enums.EventRole
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ticketUrl?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type EventUserUncheckedUpdateManyInput = {
@@ -265,6 +283,7 @@ export type EventUserUncheckedUpdateManyInput = {
   eventId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEventRoleFieldUpdateOperationsInput | $Enums.EventRole
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ticketUrl?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type EventUserListRelationFilter = {
@@ -287,6 +306,7 @@ export type EventUserCountOrderByAggregateInput = {
   eventId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
+  ticketUrl?: Prisma.SortOrder
 }
 
 export type EventUserMaxOrderByAggregateInput = {
@@ -294,6 +314,7 @@ export type EventUserMaxOrderByAggregateInput = {
   eventId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
+  ticketUrl?: Prisma.SortOrder
 }
 
 export type EventUserMinOrderByAggregateInput = {
@@ -301,6 +322,7 @@ export type EventUserMinOrderByAggregateInput = {
   eventId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
+  ticketUrl?: Prisma.SortOrder
 }
 
 export type EventUserCreateNestedManyWithoutUserInput = {
@@ -394,6 +416,7 @@ export type EnumEventRoleFieldUpdateOperationsInput = {
 export type EventUserCreateWithoutUserInput = {
   role: $Enums.EventRole
   joinedAt?: Date | string
+  ticketUrl?: string
   event: Prisma.EventCreateNestedOneWithoutParticipantsInput
 }
 
@@ -401,6 +424,7 @@ export type EventUserUncheckedCreateWithoutUserInput = {
   eventId: string
   role: $Enums.EventRole
   joinedAt?: Date | string
+  ticketUrl?: string
 }
 
 export type EventUserCreateOrConnectWithoutUserInput = {
@@ -437,11 +461,13 @@ export type EventUserScalarWhereInput = {
   eventId?: Prisma.StringFilter<"EventUser"> | string
   role?: Prisma.EnumEventRoleFilter<"EventUser"> | $Enums.EventRole
   joinedAt?: Prisma.DateTimeFilter<"EventUser"> | Date | string
+  ticketUrl?: Prisma.StringFilter<"EventUser"> | string
 }
 
 export type EventUserCreateWithoutEventInput = {
   role: $Enums.EventRole
   joinedAt?: Date | string
+  ticketUrl?: string
   user: Prisma.UserCreateNestedOneWithoutEventUsersInput
 }
 
@@ -449,6 +475,7 @@ export type EventUserUncheckedCreateWithoutEventInput = {
   userId: string
   role: $Enums.EventRole
   joinedAt?: Date | string
+  ticketUrl?: string
 }
 
 export type EventUserCreateOrConnectWithoutEventInput = {
@@ -481,11 +508,13 @@ export type EventUserCreateManyUserInput = {
   eventId: string
   role: $Enums.EventRole
   joinedAt?: Date | string
+  ticketUrl?: string
 }
 
 export type EventUserUpdateWithoutUserInput = {
   role?: Prisma.EnumEventRoleFieldUpdateOperationsInput | $Enums.EventRole
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ticketUrl?: Prisma.StringFieldUpdateOperationsInput | string
   event?: Prisma.EventUpdateOneRequiredWithoutParticipantsNestedInput
 }
 
@@ -493,23 +522,27 @@ export type EventUserUncheckedUpdateWithoutUserInput = {
   eventId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEventRoleFieldUpdateOperationsInput | $Enums.EventRole
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ticketUrl?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type EventUserUncheckedUpdateManyWithoutUserInput = {
   eventId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEventRoleFieldUpdateOperationsInput | $Enums.EventRole
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ticketUrl?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type EventUserCreateManyEventInput = {
   userId: string
   role: $Enums.EventRole
   joinedAt?: Date | string
+  ticketUrl?: string
 }
 
 export type EventUserUpdateWithoutEventInput = {
   role?: Prisma.EnumEventRoleFieldUpdateOperationsInput | $Enums.EventRole
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ticketUrl?: Prisma.StringFieldUpdateOperationsInput | string
   user?: Prisma.UserUpdateOneRequiredWithoutEventUsersNestedInput
 }
 
@@ -517,12 +550,14 @@ export type EventUserUncheckedUpdateWithoutEventInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEventRoleFieldUpdateOperationsInput | $Enums.EventRole
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ticketUrl?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type EventUserUncheckedUpdateManyWithoutEventInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEventRoleFieldUpdateOperationsInput | $Enums.EventRole
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ticketUrl?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
@@ -532,6 +567,7 @@ export type EventUserSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   eventId?: boolean
   role?: boolean
   joinedAt?: boolean
+  ticketUrl?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["eventUser"]>
@@ -541,6 +577,7 @@ export type EventUserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   eventId?: boolean
   role?: boolean
   joinedAt?: boolean
+  ticketUrl?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["eventUser"]>
@@ -550,6 +587,7 @@ export type EventUserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   eventId?: boolean
   role?: boolean
   joinedAt?: boolean
+  ticketUrl?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["eventUser"]>
@@ -559,9 +597,10 @@ export type EventUserSelectScalar = {
   eventId?: boolean
   role?: boolean
   joinedAt?: boolean
+  ticketUrl?: boolean
 }
 
-export type EventUserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"userId" | "eventId" | "role" | "joinedAt", ExtArgs["result"]["eventUser"]>
+export type EventUserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"userId" | "eventId" | "role" | "joinedAt" | "ticketUrl", ExtArgs["result"]["eventUser"]>
 export type EventUserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
@@ -586,6 +625,7 @@ export type $EventUserPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     eventId: string
     role: $Enums.EventRole
     joinedAt: Date
+    ticketUrl: string
   }, ExtArgs["result"]["eventUser"]>
   composites: {}
 }
@@ -1015,6 +1055,7 @@ export interface EventUserFieldRefs {
   readonly eventId: Prisma.FieldRef<"EventUser", 'String'>
   readonly role: Prisma.FieldRef<"EventUser", 'EventRole'>
   readonly joinedAt: Prisma.FieldRef<"EventUser", 'DateTime'>
+  readonly ticketUrl: Prisma.FieldRef<"EventUser", 'String'>
 }
     
 
@@ -1211,6 +1252,11 @@ export type EventUserFindManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Skip the first `n` EventUsers.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of EventUsers.
+   */
   distinct?: Prisma.EventUserScalarFieldEnum | Prisma.EventUserScalarFieldEnum[]
 }
 

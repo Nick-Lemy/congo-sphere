@@ -91,12 +91,6 @@ export class EventsService {
   async registerToEvent(eventId: string, user: JwtPayload) {
     const event = await this.findOne(eventId);
     try {
-      const attendee = await this.eventUsersService.create({
-        eventId: event.id,
-        userId: user.sub,
-        role: EventRole.ATTENDEE,
-      });
-
       const host = await this.prisma.eventUser.findFirst({
         where: { eventId: event.id, role: 'HOST' },
       });
@@ -108,7 +102,7 @@ export class EventsService {
       });
 
       const attendeeUser = await this.prisma.user.findUnique({
-        where: { id: attendee.userId },
+        where: { id: user.sub },
       });
 
       if (!attendeeUser) throw new NotFoundException('attendee not found');
@@ -123,6 +117,13 @@ export class EventsService {
         ticket,
         `${event.title}-ticket.pdf`,
       );
+
+      const attendee = await this.eventUsersService.create({
+        eventId: event.id,
+        userId: user.sub,
+        role: EventRole.ATTENDEE,
+        ticketUrl: ticketPath,
+      });
 
       await this.emailsService.sendEventRegistrationEmail(
         user.email,
