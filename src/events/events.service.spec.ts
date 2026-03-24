@@ -5,6 +5,7 @@ import { EventUsersService } from '../event-users/event-users.service';
 import { FilesService } from '../files/files.service';
 import { EmailsService } from '../emails/emails.service';
 import { TicketsService } from '../tickets/tickets.service';
+import { UserService } from '../user/user.service';
 
 describe('EventsService', () => {
   let service: EventsService;
@@ -37,6 +38,11 @@ describe('EventsService', () => {
   const mockTicketsService = {
     createEventPdfTicket: jest.fn(),
   };
+
+  const mockUserService = {
+    findOne: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -61,6 +67,7 @@ describe('EventsService', () => {
           provide: TicketsService,
           useValue: mockTicketsService,
         },
+        { provide: UserService, useValue: mockUserService },
       ],
     }).compile();
 
