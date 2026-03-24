@@ -24,6 +24,7 @@ import { AuthGuard } from './auth.guard';
 import { SerializeInterceptor } from '../common/interceptors/serialize.interceptor';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -106,8 +107,31 @@ export class AuthController {
     return await this.authService.getCurrentUser(user.sub);
   }
 
+  @ApiOperation({
+    summary: 'Get current user information',
+    description: 'Retrieve information about the currently authenticated user.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Mail sent sucessfully',
+    type: ResponseUserDto,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
   @Get('forgot-password')
   async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
     return this.authService.forgotPassword(forgotPasswordDto);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Post('reset-password')
+  async resetPassword(
+    @Body() resetPasswordDto: ResetPasswordDto,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    return this.authService.resetPassword(resetPasswordDto, user.sub);
   }
 }

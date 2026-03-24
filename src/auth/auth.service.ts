@@ -7,11 +7,12 @@ import { UserService } from '../user/user.service';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { compare, genSalt, hash } from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { JwtPayload } from '../common/types/jtw.type';
 import { User } from '../generated/prisma/client';
 import { EmailsService } from '../emails/emails.service';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -56,19 +57,30 @@ export class AuthService {
 
   async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
     const user = await this.userService.findOneByEmail(forgotPasswordDto.email);
-    const token = await this.generateToken(user);
+    const token = await this.generateToken(user, '5min');
     await this.emailsService.sendForgotPasswordEmail(token, user.email);
-    return { message: token };
+    return { message: 'Email successfully sent!' };
   }
 
-  async generateToken(user: User) {
+  async resetPassword(resetPasswordDto: ResetPasswordDto, userId: string) {
+    const { newPassword } = resetPasswordDto;
+    const hashedNewPassword = await this.hashPassword(newPassword);
+    return this.userService.update(userId, { password: hashedNewPassword });
+  }
+
+  private async generateToken(
+    user: User,
+    expiresIn: JwtSignOptions['expiresIn'] = '24h',
+  ) {
     const payload: JwtPayload = {
       sub: user.id,
       email: user.email,
       username: user.username,
       role: user.role,
     };
-    const accessToken = await this.jwtService.signAsync(payload);
+    const accessToken = await this.jwtService.signAsync(payload, {
+      expiresIn,
+    });
     return accessToken;
   }
 
