@@ -106,7 +106,8 @@ export const EventUserScalarFieldEnum = {
   userId: 'userId',
   eventId: 'eventId',
   role: 'role',
-  joinedAt: 'joinedAt'
+  joinedAt: 'joinedAt',
+  ticketUrl: 'ticketUrl'
 } as const
 
 export type EventUserScalarFieldEnum = (typeof EventUserScalarFieldEnum)[keyof typeof EventUserScalarFieldEnum]

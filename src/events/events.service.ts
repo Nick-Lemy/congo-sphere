@@ -10,6 +10,8 @@ import { JwtPayload } from '../common/types/jtw.type';
 import { EventUsersService } from '../event-users/event-users.service';
 import { EventRole } from '../generated/prisma/enums';
 import { FilesService } from '../files/files.service';
+import { EmailsService } from '../emails/emails.service';
+import { TicketsService } from '../tickets/tickets.service';
 
 @Injectable()
 export class EventsService {
@@ -17,6 +19,8 @@ export class EventsService {
     private readonly prisma: PrismaService,
     private readonly eventUsersService: EventUsersService,
     private readonly filesService: FilesService,
+    private readonly emailsService: EmailsService,
+    private readonly ticketsService: TicketsService,
   ) {}
 
   async create(
@@ -24,7 +28,10 @@ export class EventsService {
     createEventDto: CreateEventDto,
     file: Express.Multer.File,
   ) {
-    const imageUrl = await this.filesService.uploadImage(file);
+    const imageUrl = await this.filesService.uploadImage(
+      file.buffer,
+      file.originalname,
+    );
     const event = await this.prisma.$transaction(async (tx) => {
       const event = await tx.event.create({
         data: { ...createEventDto, imageUrl },
@@ -47,11 +54,14 @@ export class EventsService {
     });
   }
 
-  findOne(id: string) {
-    return this.prisma.event.findUnique({
+  async findOne(id: string) {
+    const event = await this.prisma.event.findUnique({
       where: { id },
       include: { participants: true },
     });
+
+    if (!event) throw new NotFoundException('Event not found!');
+    return event;
   }
 
   async update(
@@ -60,9 +70,11 @@ export class EventsService {
     file?: Express.Multer.File,
   ) {
     const event = await this.findOne(id);
-    if (!event) throw new NotFoundException();
     if (file) {
-      const imageUrl = await this.filesService.uploadImage(file);
+      const imageUrl = await this.filesService.uploadImage(
+        file.buffer,
+        file.originalname,
+      );
       updateEventDto.imageUrl = imageUrl;
     }
     return this.prisma.event.update({
@@ -73,21 +85,52 @@ export class EventsService {
 
   async delete(id: string) {
     const event = await this.findOne(id);
-    if (!event) throw new NotFoundException();
     return this.prisma.event.delete({ where: { id: event.id } });
   }
 
   async registerToEvent(eventId: string, user: JwtPayload) {
     const event = await this.findOne(eventId);
-    if (!event) {
-      throw new NotFoundException('Event not found!');
-    }
+    const host = await this.prisma.eventUser.findFirst({
+      where: { eventId: event.id, role: 'HOST' },
+    });
+
+    if (!host) throw new ConflictException();
+
+    const hostUser = await this.prisma.user.findUnique({
+      where: { id: host.userId },
+    });
+
+    const attendeeUser = await this.prisma.user.findUnique({
+      where: { id: user.sub },
+    });
+
+    if (!attendeeUser) throw new NotFoundException('attendee not found');
+    if (!hostUser) throw new NotFoundException('host not found');
+
+    const ticket = await this.ticketsService.createEventPdfTicket(
+      event,
+      hostUser,
+      attendeeUser,
+    );
+    const ticketPath = await this.filesService.uploadImage(
+      ticket,
+      `${event.title}-ticket.pdf`,
+    );
 
     const attendee = await this.eventUsersService.create({
-      eventId,
+      eventId: event.id,
       userId: user.sub,
       role: EventRole.ATTENDEE,
+      ticketUrl: ticketPath,
     });
+
+    await this.emailsService.sendEventRegistrationEmail(
+      user.email,
+      event.title,
+      user.username,
+      event.id,
+      [{ filename: 'ticket.pdf', path: ticketPath }],
+    );
 
     return attendee;
   }
