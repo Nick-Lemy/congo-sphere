@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -23,7 +24,6 @@ import { type JwtPayload } from '../common/types/jtw.type';
 import { AuthGuard } from './auth.guard';
 import { SerializeInterceptor } from '../common/interceptors/serialize.interceptor';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @ApiTags('Authentication')
@@ -120,9 +120,9 @@ export class AuthController {
     status: 500,
     description: 'Internal Server Error',
   })
-  @Post('forgot-password')
-  async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
-    return this.authService.forgotPassword(forgotPasswordDto);
+  @Get('forgot-password')
+  async forgotPassword(@Query('email') email: string) {
+    return this.authService.forgotPassword(email);
   }
 
   @ApiOperation({

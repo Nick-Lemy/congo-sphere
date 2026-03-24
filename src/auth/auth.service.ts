@@ -8,7 +8,6 @@ import { CreateUserDto } from '../user/dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { compare, genSalt, hash } from 'bcrypt';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
-import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { JwtPayload } from '../common/types/jtw.type';
 import { User } from '../generated/prisma/client';
 import { EmailsService } from '../emails/emails.service';
@@ -55,8 +54,8 @@ export class AuthService {
     };
   }
 
-  async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
-    const user = await this.userService.findOneByEmail(forgotPasswordDto.email);
+  async forgotPassword(email: string) {
+    const user = await this.userService.findOneByEmail(email);
     const token = await this.generateToken(user, '5min');
     await this.emailsService.sendForgotPasswordEmail(token, user.email);
     return { message: 'Email successfully sent!' };
