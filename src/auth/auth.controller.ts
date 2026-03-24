@@ -120,7 +120,7 @@ export class AuthController {
     status: 500,
     description: 'Internal Server Error',
   })
-  @Get('forgot-password')
+  @Post('forgot-password')
   async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
     return this.authService.forgotPassword(forgotPasswordDto);
   }
@@ -144,6 +144,7 @@ export class AuthController {
   })
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
+  @UseInterceptors(new SerializeInterceptor(ResponseUserDto))
   @Post('reset-password')
   async resetPassword(
     @Body() resetPasswordDto: ResetPasswordDto,
