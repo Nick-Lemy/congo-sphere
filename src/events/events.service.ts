@@ -112,7 +112,7 @@ export class EventsService {
     await this.emailsService.sendEventRegistrationEmail(
       user.email,
       event.title,
-      user.username,
+      attendeeUser.name,
       event.id,
       [{ filename: 'ticket.pdf', path: ticketPath }],
     );
