@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateEventUsersDto } from './dto/create-event-users.dto';
 
@@ -23,5 +27,13 @@ export class EventUsersService {
       },
     });
     return attendee;
+  }
+
+  async findHost(eventId: string) {
+    const host = await this.prisma.eventUser.findFirst({
+      where: { eventId, role: 'HOST' },
+    });
+    if (!host) throw new NotFoundException('Host not found');
+    return host;
   }
 }

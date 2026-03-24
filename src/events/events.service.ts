@@ -12,6 +12,7 @@ import { EventRole } from '../generated/prisma/enums';
 import { FilesService } from '../files/files.service';
 import { EmailsService } from '../emails/emails.service';
 import { TicketsService } from '../tickets/tickets.service';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class EventsService {
@@ -21,6 +22,7 @@ export class EventsService {
     private readonly filesService: FilesService,
     private readonly emailsService: EmailsService,
     private readonly ticketsService: TicketsService,
+    private readonly userService: UserService,
   ) {}
 
   async create(
@@ -90,31 +92,14 @@ export class EventsService {
 
   async registerToEvent(eventId: string, user: JwtPayload) {
     const event = await this.findOne(eventId);
-    const host = await this.prisma.eventUser.findFirst({
-      where: { eventId: event.id, role: 'HOST' },
-    });
+    const host = await this.eventUsersService.findHost(eventId);
+    const hostUser = await this.userService.findOne(host.userId);
+    const attendeeUser = await this.userService.findOne(user.sub);
 
-    if (!host) throw new ConflictException();
-
-    const hostUser = await this.prisma.user.findUnique({
-      where: { id: host.userId },
-    });
-
-    const attendeeUser = await this.prisma.user.findUnique({
-      where: { id: user.sub },
-    });
-
-    if (!attendeeUser) throw new NotFoundException('attendee not found');
-    if (!hostUser) throw new NotFoundException('host not found');
-
-    const ticket = await this.ticketsService.createEventPdfTicket(
+    const ticketPath = await this.ticketsService.createEventPdfTicket(
       event,
       hostUser,
       attendeeUser,
-    );
-    const ticketPath = await this.filesService.uploadImage(
-      ticket,
-      `${event.title}-ticket.pdf`,
     );
 
     const attendee = await this.eventUsersService.create({

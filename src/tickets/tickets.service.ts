@@ -2,10 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { Event } from '../generated/prisma/client';
 import { ResponseUserDto } from '../user/dto/response-user.dto';
 import puppeteer from 'puppeteer';
+import { FilesService } from '../files/files.service';
 
 @Injectable()
 export class TicketsService {
-  constructor() {}
+  constructor(private readonly filesService: FilesService) {}
   private eventTicketTemplate = (
     event: Event,
     host: Pick<ResponseUserDto, 'avatarUrl' | 'name'>,
@@ -163,7 +164,12 @@ export class TicketsService {
     await page.setContent(content);
     const ticket = await page.pdf({ format: 'A4' });
     await browser.close();
-    return ticket;
+
+    const ticketPath = await this.filesService.uploadImage(
+      ticket,
+      `${event.title}-ticket.pdf`,
+    );
+    return ticketPath;
   }
 }
 /*
