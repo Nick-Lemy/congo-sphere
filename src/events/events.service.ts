@@ -90,53 +90,49 @@ export class EventsService {
 
   async registerToEvent(eventId: string, user: JwtPayload) {
     const event = await this.findOne(eventId);
-    try {
-      const host = await this.prisma.eventUser.findFirst({
-        where: { eventId: event.id, role: 'HOST' },
-      });
+    const host = await this.prisma.eventUser.findFirst({
+      where: { eventId: event.id, role: 'HOST' },
+    });
 
-      if (!host) throw new ConflictException();
+    if (!host) throw new ConflictException();
 
-      const hostUser = await this.prisma.user.findUnique({
-        where: { id: host.userId },
-      });
+    const hostUser = await this.prisma.user.findUnique({
+      where: { id: host.userId },
+    });
 
-      const attendeeUser = await this.prisma.user.findUnique({
-        where: { id: user.sub },
-      });
+    const attendeeUser = await this.prisma.user.findUnique({
+      where: { id: user.sub },
+    });
 
-      if (!attendeeUser) throw new NotFoundException('attendee not found');
-      if (!hostUser) throw new NotFoundException('host not found');
+    if (!attendeeUser) throw new NotFoundException('attendee not found');
+    if (!hostUser) throw new NotFoundException('host not found');
 
-      const ticket = await this.ticketsService.createEventPdfTicket(
-        event,
-        hostUser,
-        attendeeUser,
-      );
-      const ticketPath = await this.filesService.uploadImage(
-        ticket,
-        `${event.title}-ticket.pdf`,
-      );
+    const ticket = await this.ticketsService.createEventPdfTicket(
+      event,
+      hostUser,
+      attendeeUser,
+    );
+    const ticketPath = await this.filesService.uploadImage(
+      ticket,
+      `${event.title}-ticket.pdf`,
+    );
 
-      const attendee = await this.eventUsersService.create({
-        eventId: event.id,
-        userId: user.sub,
-        role: EventRole.ATTENDEE,
-        ticketUrl: ticketPath,
-      });
+    const attendee = await this.eventUsersService.create({
+      eventId: event.id,
+      userId: user.sub,
+      role: EventRole.ATTENDEE,
+      ticketUrl: ticketPath,
+    });
 
-      await this.emailsService.sendEventRegistrationEmail(
-        user.email,
-        event.title,
-        user.username,
-        event.id,
-        [{ filename: 'ticket.pdf', path: ticketPath }],
-      );
-      return attendee;
-    } catch (error) {
-      console.error('Error registering to event:', error);
-      throw new ConflictException('User is already registered for this event');
-    }
+    await this.emailsService.sendEventRegistrationEmail(
+      user.email,
+      event.title,
+      user.username,
+      event.id,
+      [{ filename: 'ticket.pdf', path: ticketPath }],
+    );
+
+    return attendee;
   }
 
   async cancelRegistration(eventId: string, user: JwtPayload) {
