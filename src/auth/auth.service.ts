@@ -8,12 +8,17 @@ import { CreateUserDto } from '../user/dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { compare, genSalt, hash } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { JwtPayload } from '../common/types/jtw.type';
+import { User } from '../generated/prisma/client';
+import { EmailsService } from '../emails/emails.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly emailsService: EmailsService,
   ) {}
 
   async register(createUserDto: CreateUserDto, file?: Express.Multer.File) {
@@ -43,17 +48,28 @@ export class AuthService {
     if (!isCorrectPassword)
       throw new UnauthorizedException('Incorrect Password');
 
-    const payload = {
+    const accessToken = await this.generateToken(user);
+    return {
+      access_token: accessToken,
+    };
+  }
+
+  async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
+    const user = await this.userService.findOneByEmail(forgotPasswordDto.email);
+    const token = await this.generateToken(user);
+    await this.emailsService.sendForgotPasswordEmail(token, user.email);
+    return { message: token };
+  }
+
+  async generateToken(user: User) {
+    const payload: JwtPayload = {
       sub: user.id,
       email: user.email,
       username: user.username,
       role: user.role,
     };
-
     const accessToken = await this.jwtService.signAsync(payload);
-    return {
-      access_token: accessToken,
-    };
+    return accessToken;
   }
 
   private async hashPassword(password: string) {

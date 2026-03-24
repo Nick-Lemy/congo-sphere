@@ -23,6 +23,7 @@ import { type JwtPayload } from '../common/types/jtw.type';
 import { AuthGuard } from './auth.guard';
 import { SerializeInterceptor } from '../common/interceptors/serialize.interceptor';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -103,5 +104,10 @@ export class AuthController {
   @Get('me')
   async getCurrentUser(@CurrentUser() user: JwtPayload) {
     return await this.authService.getCurrentUser(user.sub);
+  }
+
+  @Get('forgot-password')
+  async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(forgotPasswordDto);
   }
 }
