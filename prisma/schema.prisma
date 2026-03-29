@@ -14,7 +14,6 @@ datasource db {
   provider = "postgresql"
 }
 
-// https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg
 model User {
   id        String   @id @default(uuid())
   name      String
