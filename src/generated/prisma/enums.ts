@@ -23,3 +23,11 @@ export const UserRole = {
 } as const
 
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]
+
+
+export const EventType = {
+  FREE: 'FREE',
+  PAID: 'PAID'
+} as const
+
+export type EventType = (typeof EventType)[keyof typeof EventType]

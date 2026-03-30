@@ -50,6 +50,11 @@ export type User = Prisma.UserModel
  */
 export type Event = Prisma.EventModel
 /**
+ * Model TicketType
+ * 
+ */
+export type TicketType = Prisma.TicketTypeModel
+/**
  * Model EventUser
  * 
  */

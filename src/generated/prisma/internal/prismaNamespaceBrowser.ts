@@ -53,6 +53,7 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   Event: 'Event',
+  TicketType: 'TicketType',
   EventUser: 'EventUser'
 } as const
 
@@ -95,6 +96,7 @@ export const EventScalarFieldEnum = {
   location: 'location',
   startDate: 'startDate',
   endDate: 'endDate',
+  eventType: 'eventType',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -102,12 +104,23 @@ export const EventScalarFieldEnum = {
 export type EventScalarFieldEnum = (typeof EventScalarFieldEnum)[keyof typeof EventScalarFieldEnum]
 
 
+export const TicketTypeScalarFieldEnum = {
+  id: 'id',
+  eventId: 'eventId',
+  name: 'name',
+  price: 'price'
+} as const
+
+export type TicketTypeScalarFieldEnum = (typeof TicketTypeScalarFieldEnum)[keyof typeof TicketTypeScalarFieldEnum]
+
+
 export const EventUserScalarFieldEnum = {
   userId: 'userId',
   eventId: 'eventId',
   role: 'role',
   joinedAt: 'joinedAt',
-  ticketUrl: 'ticketUrl'
+  ticketUrl: 'ticketUrl',
+  ticketTypeId: 'ticketTypeId'
 } as const
 
 export type EventUserScalarFieldEnum = (typeof EventUserScalarFieldEnum)[keyof typeof EventUserScalarFieldEnum]
@@ -127,4 +140,12 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
