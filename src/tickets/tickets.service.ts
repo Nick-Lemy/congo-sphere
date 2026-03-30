@@ -172,19 +172,3 @@ export class TicketsService {
     return ticketPath;
   }
 }
-/*
-app.get('/download', async (req, res) => {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  await page.setContent('<h1>My Report</h1>');
-  const pdf = await page.pdf({ format: 'A4' });
-  await browser.close();
-
-  res.set({
-    'Content-Type': 'application/pdf',
-    'Content-Disposition': 'attachment; filename="report.pdf"',
-    'Content-Length': pdf.length,
-  });
-  res.send(pdf);
-});
-*/
