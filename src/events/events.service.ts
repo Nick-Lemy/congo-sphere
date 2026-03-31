@@ -165,4 +165,9 @@ export class EventsService {
       where: { userId_eventId: { userId: user.sub, eventId } },
     });
   }
+
+  async findHost(id: string) {
+    const host = await this.eventUsersService.findHost(id);
+    return host;
+  }
 }

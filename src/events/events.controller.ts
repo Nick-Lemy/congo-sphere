@@ -181,4 +181,21 @@ export class EventsController {
   delete(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
     return this.eventsService.delete(id, user);
   }
+
+  @ApiOperation({
+    summary: 'Find Event Host',
+    description: 'Get event host by event id',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Host Found!',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Host not found!',
+  })
+  @Get(':id/host')
+  findhost(@Param('id') id: string) {
+    return this.eventsService.findHost(id);
+  }
 }
