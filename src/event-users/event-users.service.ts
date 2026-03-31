@@ -38,12 +38,24 @@ export class EventUsersService {
   async findHost(eventId: string) {
     const host = await this.prisma.eventUser.findFirst({
       where: { eventId, role: 'HOST' },
+      select: {
+        user: {
+          select: { id: true, name: true, email: true, avatarUrl: true },
+        },
+      },
     });
     if (!host) throw new NotFoundException('Host not found');
     return host;
   }
 
   async findEventAttendees(id: string) {
-    return await this.prisma.eventUser.findMany({ where: { eventId: id } });
+    return await this.prisma.eventUser.findMany({
+      where: { eventId: id },
+      select: {
+        user: {
+          select: { id: true, name: true, email: true, avatarUrl: true },
+        },
+      },
+    });
   }
 }

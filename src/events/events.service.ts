@@ -88,8 +88,8 @@ export class EventsService {
     file?: Express.Multer.File,
   ) {
     const event = await this.findOne(id);
-    const host = await this.eventUsersService.findHost(id);
-    if (host.userId !== user.sub || user.role !== 'ADMIN')
+    const { user: host } = await this.eventUsersService.findHost(id);
+    if (host.id !== user.sub || user.role !== 'ADMIN')
       throw new ConflictException(
         'Only the host and admin can update the event!',
       );
@@ -108,8 +108,8 @@ export class EventsService {
 
   async delete(id: string, user: JwtPayload) {
     const event = await this.findOne(id);
-    const host = await this.eventUsersService.findHost(id);
-    if (host.userId !== user.sub || user.role !== 'ADMIN')
+    const { user: host } = await this.eventUsersService.findHost(id);
+    if (host.id !== user.sub || user.role !== 'ADMIN')
       throw new ConflictException(
         'Only the host and admin can delete the event!',
       );
@@ -123,8 +123,7 @@ export class EventsService {
     ticketTypeId?: string,
   ) {
     const event = await this.findOne(eventId);
-    const host = await this.eventUsersService.findHost(eventId);
-    const hostUser = await this.userService.findOne(host.userId);
+    const { user: hostUser } = await this.eventUsersService.findHost(eventId);
     const attendeeUser = await this.userService.findOne(user.sub);
 
     const ticketPath = await this.ticketsService.createEventPdfTicket(
@@ -167,8 +166,7 @@ export class EventsService {
   }
 
   async findHost(id: string) {
-    const host = await this.eventUsersService.findHost(id);
-    return host;
+    return this.eventUsersService.findHost(id);
   }
 
   async findAllAttendees(id: string) {
