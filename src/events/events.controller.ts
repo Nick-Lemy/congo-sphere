@@ -140,10 +140,10 @@ export class EventsController {
   @Post(':id/register')
   registerToEvent(
     @Param('id') id: string,
-    @Query('ticketTypeId') ticketTypeId: string,
     @CurrentUser() user: JwtPayload,
+    @Query('ticketTypeId') ticketTypeId?: string,
   ) {
-    return this.eventsService.registerToEvent(id, ticketTypeId, user);
+    return this.eventsService.registerToEvent(id, user, ticketTypeId);
   }
 
   @ApiOperation({

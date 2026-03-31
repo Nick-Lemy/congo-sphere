@@ -73,7 +73,7 @@ export class EventsService {
       where: { id },
       include: {
         participants: true,
-        ticketTypes: { select: { name: true, price: true } },
+        ticketTypes: { select: { name: true, price: true, id: true } },
       },
     });
 
@@ -119,8 +119,8 @@ export class EventsService {
 
   async registerToEvent(
     eventId: string,
-    ticketTypeId: string,
     user: JwtPayload,
+    ticketTypeId?: string,
   ) {
     const event = await this.findOne(eventId);
     const host = await this.eventUsersService.findHost(eventId);

@@ -15,6 +15,7 @@ export class EventUsersService {
     const existingAttendee = await this.prisma.eventUser.findUnique({
       where: { userId_eventId: { userId, eventId } },
     });
+    console.log(ticketTypeId, ticketTypeId?.length);
     if (existingAttendee)
       throw new ConflictException(
         'You are already a Participant of this event',
@@ -25,7 +26,10 @@ export class EventUsersService {
         joinedAt: new Date(),
         event: { connect: { id: eventId } },
         user: { connect: { id: userId } },
-        ticketType: { connect: { id: ticketTypeId } },
+        ...(ticketTypeId &&
+          ticketTypeId.length > 5 && {
+            ticketType: { connect: { id: ticketTypeId } },
+          }),
       },
     });
     return attendee;
