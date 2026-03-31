@@ -12,7 +12,6 @@ import { FilesService } from './files/files.service';
 import { EmailsModule } from './emails/emails.module';
 import { TicketsModule } from './tickets/tickets.module';
 import { ConfigModule } from '@nestjs/config';
-import { TicketTypesService } from './ticket-types/ticket-types.service';
 
 @Module({
   imports: [
@@ -33,7 +32,6 @@ import { TicketTypesService } from './ticket-types/ticket-types.service';
     UserService,
     EventUsersService,
     FilesService,
-    TicketTypesService,
   ],
 })
 export class AppModule {}
