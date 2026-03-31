@@ -27,7 +27,7 @@ export class EventUsersService {
         event: { connect: { id: eventId } },
         user: { connect: { id: userId } },
         ...(ticketTypeId &&
-          ticketTypeId.length > 5 && {
+          ticketTypeId.length > 10 && {
             ticketType: { connect: { id: ticketTypeId } },
           }),
       },
