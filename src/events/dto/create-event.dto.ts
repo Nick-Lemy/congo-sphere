@@ -1,8 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
+  IsArray,
   IsDateString,
   IsEnum,
-  IsJSON,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -64,7 +65,14 @@ export class CreateEventDto {
     ],
   })
   @IsOptional()
-  @IsJSON({ message: 'ticketTypes must be a valid JSON string' })
+  @IsArray()
+  @Transform(({ value }: { value: unknown }) => {
+    if (typeof value !== 'string')
+      return value as Pick<TicketType, 'name' | 'price'>[];
+    const trimmed = value.trim();
+    const json = trimmed.startsWith('[') ? trimmed : `[${trimmed}]`;
+    return JSON.parse(json) as Pick<TicketType, 'name' | 'price'>[];
+  })
   ticketTypes?: Pick<TicketType, 'name' | 'price'>[];
 
   @ApiProperty({

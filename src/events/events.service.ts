@@ -47,13 +47,16 @@ export class EventsService {
           role: EventRole.HOST,
         },
       });
-      await tx.ticketType.createMany({
-        data:
-          ticketTypes?.map((ticket) => ({
-            ...ticket,
-            eventId: event.id,
-          })) || [],
-      });
+      if (Array.isArray(ticketTypes) && ticketTypes.length > 0) {
+        await tx.ticketType.createMany({
+          data:
+            ticketTypes?.map((ticket) => ({
+              ...ticket,
+              eventId: event.id,
+            })) || [],
+        });
+      }
+
       return event;
     });
     return event;
