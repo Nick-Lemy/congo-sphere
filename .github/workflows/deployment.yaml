@@ -60,14 +60,14 @@ jobs:
             EOF
 
             # ── Build ────────────────────────────────────────────────────────
-            docker build -t congo-sphere .
+            sudo docker build -t congo-sphere .
 
             # ── Swap container (zero-downtime swap) ──────────────────────────
-            docker stop congo-sphere-old 2>/dev/null || true
-            docker rm congo-sphere-old 2>/dev/null || true
-            docker rename congo-sphere congo-sphere-old 2>/dev/null || true
+            sudo docker stop congo-sphere-old 2>/dev/null || true
+            sudo docker rm congo-sphere-old 2>/dev/null || true
+            sudo docker rename congo-sphere congo-sphere-old 2>/dev/null || true
 
-            docker run -d \
+            sudo docker run -d \
               --name congo-sphere \
               --restart unless-stopped \
               --env-file .env \
@@ -76,17 +76,17 @@ jobs:
 
             # Verify new container started before removing old one
             sleep 3
-            if docker ps --filter "name=congo-sphere" --filter "status=running" | grep -q congo-sphere; then
-              docker stop congo-sphere-old 2>/dev/null || true
-              docker rm congo-sphere-old 2>/dev/null || true
+            if sudo docker ps --filter "name=congo-sphere" --filter "status=running" | grep -q congo-sphere; then
+              sudo docker stop congo-sphere-old 2>/dev/null || true
+              sudo docker rm congo-sphere-old 2>/dev/null || true
             else
               echo "New container failed to start, rolling back..."
-              docker stop congo-sphere 2>/dev/null || true
-              docker rm congo-sphere 2>/dev/null || true
-              docker rename congo-sphere-old congo-sphere 2>/dev/null || true
-              docker start congo-sphere
+              sudo docker stop congo-sphere 2>/dev/null || true
+              sudo docker rm congo-sphere 2>/dev/null || true
+              sudo docker rename congo-sphere-old congo-sphere 2>/dev/null || true
+              sudo docker start congo-sphere
               exit 1
             fi
 
             # ── Cleanup dangling images ──────────────────────────────────────
-            docker image prune -f
+            sudo docker image prune -f
