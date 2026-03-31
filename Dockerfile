@@ -1,5 +1,4 @@
-
-FROM node:24-alpine
+FROM node:24-alpine AS builder
 RUN apk add --no-cache pnpm
 WORKDIR /app
 
@@ -8,6 +7,15 @@ RUN pnpm install
 
 COPY . .
 RUN pnpm build
-EXPOSE 3000
-CMD ["pnpm", "start"]
 
+FROM node:24-alpine AS runner
+RUN apk add --no-cache pnpm
+WORKDIR /app
+
+COPY package*.json pnpm-lock.yaml ./
+RUN pnpm install --prod
+
+COPY --from=builder /app/dist ./dist
+
+EXPOSE 3000
+CMD ["node", "dist/main"]
