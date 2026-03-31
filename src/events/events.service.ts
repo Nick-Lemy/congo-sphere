@@ -34,9 +34,11 @@ export class EventsService {
       file.buffer,
       file.originalname,
     );
+    const { ticketTypes, ...eventData } = createEventDto;
+
     const event = await this.prisma.$transaction(async (tx) => {
       const event = await tx.event.create({
-        data: { ...createEventDto, imageUrl },
+        data: { ...eventData, imageUrl },
       });
       await tx.eventUser.create({
         data: {
@@ -44,6 +46,13 @@ export class EventsService {
           userId: currentUser.sub,
           role: EventRole.HOST,
         },
+      });
+      await tx.ticketType.createMany({
+        data:
+          ticketTypes?.map((ticket) => ({
+            ...ticket,
+            eventId: event.id,
+          })) || [],
       });
       return event;
     });

@@ -8,6 +8,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { EventType } from '../../generated/prisma/enums';
+import { TicketType } from '../../generated/prisma/client';
 
 export class CreateEventDto {
   @ApiProperty({
@@ -52,6 +53,8 @@ export class CreateEventDto {
   })
   @IsEnum(EventType)
   eventType: EventType = EventType.FREE;
+
+  ticketTypes?: Pick<TicketType, 'name' | 'price'>[];
 
   @ApiProperty({
     description: 'Start date and time of the event',
