@@ -192,10 +192,27 @@ export class EventsController {
   })
   @ApiResponse({
     status: 404,
-    description: 'Host not found!',
+    description: 'Host or Event not found!',
   })
   @Get(':id/host')
   findhost(@Param('id') id: string) {
     return this.eventsService.findHost(id);
+  }
+
+  @ApiOperation({
+    summary: 'Find Attendees of event',
+    description: 'Get all attendees of an event by the eventId',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of attendees retrieved succesfully!',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Event not found!',
+  })
+  @Get(':id/attendees')
+  findAllAttendees(@Param('id') id: string) {
+    return this.eventsService.findAllAttendees(id);
   }
 }

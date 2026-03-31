@@ -170,4 +170,8 @@ export class EventsService {
     const host = await this.eventUsersService.findHost(id);
     return host;
   }
+
+  async findAllAttendees(id: string) {
+    return await this.eventUsersService.findEventAttendees(id);
+  }
 }

@@ -42,4 +42,8 @@ export class EventUsersService {
     if (!host) throw new NotFoundException('Host not found');
     return host;
   }
+
+  async findEventAttendees(id: string) {
+    return await this.prisma.eventUser.findMany({ where: { eventId: id } });
+  }
 }
