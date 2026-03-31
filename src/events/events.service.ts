@@ -64,7 +64,16 @@ export class EventsService {
 
   findAll() {
     return this.prisma.event.findMany({
-      include: { participants: { where: { role: EventRole.HOST } } },
+      include: {
+        participants: {
+          where: { role: EventRole.HOST },
+          select: {
+            user: {
+              select: { id: true, name: true, email: true, avatarUrl: true },
+            },
+          },
+        },
+      },
     });
   }
 
@@ -72,7 +81,13 @@ export class EventsService {
     const event = await this.prisma.event.findUnique({
       where: { id },
       include: {
-        participants: true,
+        participants: {
+          select: {
+            user: {
+              select: { id: true, name: true, email: true, avatarUrl: true },
+            },
+          },
+        },
         ticketTypes: { select: { name: true, price: true, id: true } },
       },
     });
