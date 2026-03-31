@@ -1,7 +1,6 @@
 
-FROM node:20-slim
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
+FROM node:24-alpine
+RUN apk add --no-cache pnpm
 WORKDIR /app
 
 COPY package*.json pnpm-lock.yaml pnpm-workspace.yaml ./
