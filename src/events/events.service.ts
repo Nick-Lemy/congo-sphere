@@ -111,7 +111,11 @@ export class EventsService {
     return this.prisma.event.delete({ where: { id: event.id } });
   }
 
-  async registerToEvent(eventId: string, user: JwtPayload) {
+  async registerToEvent(
+    eventId: string,
+    ticketTypeId: string,
+    user: JwtPayload,
+  ) {
     const event = await this.findOne(eventId);
     const host = await this.eventUsersService.findHost(eventId);
     const hostUser = await this.userService.findOne(host.userId);
@@ -128,6 +132,7 @@ export class EventsService {
       userId: user.sub,
       role: EventRole.ATTENDEE,
       ticketUrl: ticketPath,
+      ticketTypeId,
     });
 
     await this.emailsService.sendEventRegistrationEmail(

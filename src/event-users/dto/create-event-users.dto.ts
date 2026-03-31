@@ -5,4 +5,5 @@ export class CreateEventUsersDto {
   userId!: string;
   role!: EventRole;
   ticketUrl!: string;
+  ticketTypeId?: string;
 }

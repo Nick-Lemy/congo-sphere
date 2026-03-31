@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -137,8 +138,12 @@ export class EventsController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @Post(':id/register')
-  registerToEvent(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
-    return this.eventsService.registerToEvent(id, user);
+  registerToEvent(
+    @Param('id') id: string,
+    @Query('ticketTypeId') ticketTypeId: string,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    return this.eventsService.registerToEvent(id, ticketTypeId, user);
   }
 
   @ApiOperation({
