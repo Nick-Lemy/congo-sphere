@@ -15,7 +15,7 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto, file?: Express.Multer.File) {
     if (file) {
-      const avatarUrl = await this.filesService.uploadImage(
+      const avatarUrl = await this.filesService.uploadFile(
         file.buffer,
         file.originalname,
       );

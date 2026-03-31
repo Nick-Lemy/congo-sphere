@@ -1,7 +1,10 @@
 import {
   Body,
   Controller,
+  FileTypeValidator,
   Get,
+  MaxFileSizeValidator,
+  ParseFilePipe,
   Post,
   Query,
   UploadedFile,
@@ -54,7 +57,15 @@ export class AuthController {
   @UseInterceptors(new SerializeInterceptor(ResponseUserDto))
   register(
     @Body() createUserDto: CreateUserDto,
-    @UploadedFile() file?: Express.Multer.File,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 10 * 1024 * 1024 }),
+          new FileTypeValidator({ fileType: 'image/*' }),
+        ],
+      }),
+    )
+    file?: Express.Multer.File,
   ) {
     return this.authService.register(createUserDto, file);
   }

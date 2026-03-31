@@ -165,7 +165,7 @@ export class TicketsService {
     const ticket = await page.pdf({ format: 'A4' });
     await browser.close();
 
-    const ticketPath = await this.filesService.uploadImage(
+    const ticketPath = await this.filesService.uploadFile(
       ticket,
       `${event.title}-ticket.pdf`,
     );

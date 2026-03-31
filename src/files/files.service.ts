@@ -14,7 +14,7 @@ export class FilesService {
     });
   }
 
-  async uploadImage(
+  async uploadFile(
     fileBuffer:
       | string
       | NodeJS.ArrayBufferView

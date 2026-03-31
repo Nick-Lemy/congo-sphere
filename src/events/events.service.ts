@@ -30,7 +30,7 @@ export class EventsService {
     createEventDto: CreateEventDto,
     file: Express.Multer.File,
   ) {
-    const imageUrl = await this.filesService.uploadImage(
+    const imageUrl = await this.filesService.uploadFile(
       file.buffer,
       file.originalname,
     );
@@ -109,7 +109,7 @@ export class EventsService {
         'Only the host and admin can update the event!',
       );
     if (file) {
-      const imageUrl = await this.filesService.uploadImage(
+      const imageUrl = await this.filesService.uploadFile(
         file.buffer,
         file.originalname,
       );
