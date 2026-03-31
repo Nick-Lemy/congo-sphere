@@ -1,11 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsDateString,
+  IsEnum,
   IsNotEmpty,
   IsString,
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { EventType } from '../../generated/prisma/enums';
 
 export class CreateEventDto {
   @ApiProperty({
@@ -34,6 +36,22 @@ export class CreateEventDto {
   @IsNotEmpty()
   @IsString()
   location!: string;
+
+  @ApiProperty({
+    description: 'Category of the event',
+    example: 'Technology',
+  })
+  @IsNotEmpty()
+  @IsString()
+  category!: string;
+
+  @ApiProperty({
+    description: 'Type of the event',
+    example: 'FREE',
+    enum: EventType,
+  })
+  @IsEnum(EventType)
+  eventType: EventType = EventType.FREE;
 
   @ApiProperty({
     description: 'Start date and time of the event',
