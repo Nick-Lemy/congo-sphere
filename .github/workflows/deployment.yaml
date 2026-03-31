@@ -60,14 +60,14 @@ jobs:
             EOF
 
             # ── Build ────────────────────────────────────────────────────────
-            $DOCKER build -t congo-sphere .
+            docker build -t congo-sphere .
 
             # ── Swap container (zero-downtime swap) ──────────────────────────
-            $DOCKER stop congo-sphere-old 2>/dev/null || true
-            $DOCKER rm congo-sphere-old 2>/dev/null || true
-            $DOCKER rename congo-sphere congo-sphere-old 2>/dev/null || true
+            docker stop congo-sphere-old 2>/dev/null || true
+            docker rm congo-sphere-old 2>/dev/null || true
+            docker rename congo-sphere congo-sphere-old 2>/dev/null || true
 
-            $DOCKER run -d \
+            docker run -d \
               --name congo-sphere \
               --restart unless-stopped \
               --env-file .env \
@@ -76,17 +76,17 @@ jobs:
 
             # Verify new container started before removing old one
             sleep 3
-            if $DOCKER ps --filter "name=congo-sphere" --filter "status=running" | grep -q congo-sphere; then
-              $DOCKER stop congo-sphere-old 2>/dev/null || true
-              $DOCKER rm congo-sphere-old 2>/dev/null || true
+            if docker ps --filter "name=congo-sphere" --filter "status=running" | grep -q congo-sphere; then
+              docker stop congo-sphere-old 2>/dev/null || true
+              docker rm congo-sphere-old 2>/dev/null || true
             else
               echo "New container failed to start, rolling back..."
-              $DOCKER stop congo-sphere 2>/dev/null || true
-              $DOCKER rm congo-sphere 2>/dev/null || true
-              $DOCKER rename congo-sphere-old congo-sphere 2>/dev/null || true
-              $DOCKER start congo-sphere
+              docker stop congo-sphere 2>/dev/null || true
+              docker rm congo-sphere 2>/dev/null || true
+              docker rename congo-sphere-old congo-sphere 2>/dev/null || true
+              docker start congo-sphere
               exit 1
             fi
 
             # ── Cleanup dangling images ──────────────────────────────────────
-            $DOCKER image prune -f
+            docker image prune -f
