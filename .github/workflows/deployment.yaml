@@ -31,31 +31,14 @@ jobs:
           port: ${{ secrets.SSH_PORT || 22 }}
           envs: DATABASE_URL,JWT_SECRET,CLOUDINARY_CLOUD_NAME,CLOUDINARY_API_KEY,CLOUDINARY_API_SECRET,CLOUDINARY_URL,EMAIL_USER,EMAIL_HOST,EMAIL_PASS,EMAIL_PORT
           script: |
-            set -e
 
-            # # ── Bootstrap: git ───────────────────────────────────────────────
-            # if ! command -v git &>/dev/null; then
-            #   sudo apt-get update -y && sudo apt-get install -y git
-            # fi
 
-            # # ── Bootstrap: Docker ────────────────────────────────────────────
-            # if ! command -v docker &>/dev/null; then
-            #   curl -fsSL https://get.docker.com | sudo sh
-            #   sudo usermod -aG docker "$USER"
-            #   # Group change takes effect next login; use sudo for this run
-            #   DOCKER="sudo docker"
-            # else
-            #   DOCKER="docker"
-            # fi
-
-            # ── Repo: clone or update ────────────────────────────────────────
             REPO_DIR="$HOME/congo-sphere-backend"
             REPO_URL="https://github.com/${{ github.repository }}.git"
 
             if [ -d "$REPO_DIR/.git" ]; then
               cd "$REPO_DIR"
-              git fetch origin
-              git reset --hard origin/main
+              git pull origin main
             else
               git clone --branch main "$REPO_URL" "$REPO_DIR"
               cd "$REPO_DIR"
