@@ -1,3 +1,4 @@
+import { IsUUID } from 'class-validator';
 import { EventRole } from '../../generated/prisma/enums';
 
 export class CreateEventUsersDto {
@@ -5,5 +6,7 @@ export class CreateEventUsersDto {
   userId!: string;
   role!: EventRole;
   ticketUrl!: string;
+
+  @IsUUID()
   ticketTypeId?: string;
 }
