@@ -96,6 +96,8 @@ export const EventScalarFieldEnum = {
   location: 'location',
   startDate: 'startDate',
   endDate: 'endDate',
+  isFeatured: 'isFeatured',
+  category: 'category',
   eventType: 'eventType',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

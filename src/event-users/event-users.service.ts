@@ -10,20 +10,26 @@ import { CreateEventUsersDto } from './dto/create-event-users.dto';
 export class EventUsersService {
   constructor(private readonly prisma: PrismaService) {}
   async create(createEventUsersDto: CreateEventUsersDto) {
-    const { eventId, userId, ...rest } = createEventUsersDto;
+    const { eventId, userId, ticketTypeId, ...eventUserData } =
+      createEventUsersDto;
     const existingAttendee = await this.prisma.eventUser.findUnique({
       where: { userId_eventId: { userId, eventId } },
     });
+    console.log(ticketTypeId, ticketTypeId?.length);
     if (existingAttendee)
       throw new ConflictException(
         'You are already a Participant of this event',
       );
     const attendee = await this.prisma.eventUser.create({
       data: {
-        ...rest,
+        ...eventUserData,
         joinedAt: new Date(),
         event: { connect: { id: eventId } },
         user: { connect: { id: userId } },
+        ...(ticketTypeId &&
+          ticketTypeId.length > 10 && {
+            ticketType: { connect: { id: ticketTypeId } },
+          }),
       },
     });
     return attendee;

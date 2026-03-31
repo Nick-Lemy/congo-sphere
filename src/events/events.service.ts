@@ -34,9 +34,11 @@ export class EventsService {
       file.buffer,
       file.originalname,
     );
+    const { ticketTypes, ...eventData } = createEventDto;
+
     const event = await this.prisma.$transaction(async (tx) => {
       const event = await tx.event.create({
-        data: { ...createEventDto, imageUrl },
+        data: { ...eventData, imageUrl },
       });
       await tx.eventUser.create({
         data: {
@@ -45,6 +47,16 @@ export class EventsService {
           role: EventRole.HOST,
         },
       });
+      if (Array.isArray(ticketTypes) && ticketTypes.length > 0) {
+        await tx.ticketType.createMany({
+          data:
+            ticketTypes?.map((ticket) => ({
+              ...ticket,
+              eventId: event.id,
+            })) || [],
+        });
+      }
+
       return event;
     });
     return event;
@@ -59,7 +71,10 @@ export class EventsService {
   async findOne(id: string) {
     const event = await this.prisma.event.findUnique({
       where: { id },
-      include: { participants: true },
+      include: {
+        participants: true,
+        ticketTypes: { select: { name: true, price: true, id: true } },
+      },
     });
 
     if (!event) throw new NotFoundException('Event not found!');
@@ -102,7 +117,11 @@ export class EventsService {
     return this.prisma.event.delete({ where: { id: event.id } });
   }
 
-  async registerToEvent(eventId: string, user: JwtPayload) {
+  async registerToEvent(
+    eventId: string,
+    user: JwtPayload,
+    ticketTypeId?: string,
+  ) {
     const event = await this.findOne(eventId);
     const host = await this.eventUsersService.findHost(eventId);
     const hostUser = await this.userService.findOne(host.userId);
@@ -119,6 +138,7 @@ export class EventsService {
       userId: user.sub,
       role: EventRole.ATTENDEE,
       ticketUrl: ticketPath,
+      ticketTypeId,
     });
 
     await this.emailsService.sendEventRegistrationEmail(

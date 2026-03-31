@@ -1,11 +1,17 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
+  IsArray,
   IsDateString,
+  IsEnum,
   IsNotEmpty,
+  IsOptional,
   IsString,
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { EventType } from '../../generated/prisma/enums';
+import { TicketType } from '../../generated/prisma/client';
 
 export class CreateEventDto {
   @ApiProperty({
@@ -34,6 +40,40 @@ export class CreateEventDto {
   @IsNotEmpty()
   @IsString()
   location!: string;
+
+  @ApiProperty({
+    description: 'Category of the event',
+    example: 'Technology',
+  })
+  @IsNotEmpty()
+  @IsString()
+  category!: string;
+
+  @ApiProperty({
+    description: 'Type of the event',
+    example: 'FREE',
+    enum: EventType,
+  })
+  @IsEnum(EventType)
+  eventType: EventType = EventType.FREE;
+
+  @ApiPropertyOptional({
+    description: 'List of ticket types for the event',
+    example: [
+      { name: 'General Admission', price: 0 },
+      { name: 'VIP', price: 100 },
+    ],
+  })
+  @IsOptional()
+  @IsArray()
+  @Transform(({ value }: { value: unknown }) => {
+    if (typeof value !== 'string')
+      return value as Pick<TicketType, 'name' | 'price'>[];
+    const trimmed = value.trim();
+    const json = trimmed.startsWith('[') ? trimmed : `[${trimmed}]`;
+    return JSON.parse(json) as Pick<TicketType, 'name' | 'price'>[];
+  })
+  ticketTypes?: Pick<TicketType, 'name' | 'price'>[];
 
   @ApiProperty({
     description: 'Start date and time of the event',

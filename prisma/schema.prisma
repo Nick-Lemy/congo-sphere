@@ -37,6 +37,8 @@ model Event {
   startDate   DateTime
   endDate     DateTime
 
+  isFeatured   Boolean      @default(false)
+  category     String       @default("general")
   eventType    EventType    @default(FREE)
   ticketTypes  TicketType[]
   participants EventUser[]
