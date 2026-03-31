@@ -1,8 +1,10 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsDateString,
   IsEnum,
+  IsJSON,
   IsNotEmpty,
+  IsOptional,
   IsString,
   MaxLength,
   MinLength,
@@ -54,6 +56,15 @@ export class CreateEventDto {
   @IsEnum(EventType)
   eventType: EventType = EventType.FREE;
 
+  @ApiPropertyOptional({
+    description: 'List of ticket types for the event',
+    example: [
+      { name: 'General Admission', price: 0 },
+      { name: 'VIP', price: 100 },
+    ],
+  })
+  @IsOptional()
+  @IsJSON({ message: 'ticketTypes must be a valid JSON string' })
   ticketTypes?: Pick<TicketType, 'name' | 'price'>[];
 
   @ApiProperty({
