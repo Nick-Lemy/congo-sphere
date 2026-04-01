@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
 import { randomUUID } from 'crypto';
 import { mkdir, unlink, writeFile } from 'fs/promises';
-import Stream from 'stream';
+import sharp from 'sharp';
 
 @Injectable()
 export class FilesService {
@@ -14,30 +14,58 @@ export class FilesService {
     });
   }
 
-  async uploadFile(
-    fileBuffer:
-      | string
-      | NodeJS.ArrayBufferView
-      | Iterable<string | NodeJS.ArrayBufferView>
-      | AsyncIterable<string | NodeJS.ArrayBufferView>
-      | Stream,
-    fileName: string,
-  ) {
-    const tmpPath = `./tmp/${randomUUID()}-${fileName}`;
-    try {
-      await mkdir('./tmp', { recursive: true });
-      await writeFile(tmpPath, fileBuffer);
+  async uploadImage(fileBuffer: Buffer, fileName: string): Promise<string> {
+    const tmpPath = await this.saveFileTemporarily(fileBuffer, fileName);
+    const webpPath = await this.convertImagetoWebp(tmpPath);
+    const secureUrl = await this.saveFileToCloudinary(webpPath);
+    return secureUrl;
+  }
 
-      const { secure_url } = await cloudinary.uploader.upload(tmpPath);
+  async uploadPdf(fileBuffer: Buffer, fileName: string): Promise<string> {
+    const tmpPath = await this.saveFileTemporarily(fileBuffer, fileName);
+    const secureUrl = await this.saveFileToCloudinary(tmpPath);
+    return secureUrl;
+  }
+
+  private async convertImagetoWebp(imagePath: string): Promise<string> {
+    try {
+      const webpPath = imagePath + '.webp';
+      await sharp(imagePath).resize(320, 240).toFile(webpPath);
+      return webpPath;
+    } catch (error) {
+      console.error('Image conversion failed:', error);
+      throw new InternalServerErrorException('Failed to process image');
+    } finally {
+      await this.deleteFile(imagePath);
+    }
+  }
+
+  private async saveFileToCloudinary(filePath: string) {
+    try {
+      const { secure_url } = await cloudinary.uploader.upload(filePath);
       return secure_url;
     } catch (error) {
       console.error('Upload failed:', error);
 
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException('Failed to upload file');
     } finally {
-      await unlink(tmpPath).catch((err: Error) => {
-        console.warn('Failed to delete temp file:', err.message);
-      });
+      await this.deleteFile(filePath);
     }
+  }
+
+  private async saveFileTemporarily(
+    fileBuffer: Buffer,
+    fileName: string,
+  ): Promise<string> {
+    const tmpPath = `./tmp/${randomUUID()}-${fileName}`;
+    await mkdir('./tmp', { recursive: true });
+    await writeFile(tmpPath, fileBuffer);
+    return tmpPath;
+  }
+
+  private async deleteFile(filePath: string) {
+    return unlink(filePath).catch((err: Error) => {
+      console.warn('Failed to delete file:', err.message);
+    });
   }
 }
