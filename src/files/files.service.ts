@@ -16,8 +16,8 @@ export class FilesService {
 
   async uploadImage(fileBuffer: Buffer, fileName: string): Promise<string> {
     const tmpPath = await this.saveFileTemporarily(fileBuffer, fileName);
-    await this.convertImagetoWebp(tmpPath);
-    const secureUrl = await this.saveFileToCloudinary(tmpPath + '.webp');
+    const webpPath = await this.convertImagetoWebp(tmpPath);
+    const secureUrl = await this.saveFileToCloudinary(webpPath);
     return secureUrl;
   }
 
@@ -27,10 +27,11 @@ export class FilesService {
     return secureUrl;
   }
 
-  private async convertImagetoWebp(imagePath: string): Promise<void> {
+  private async convertImagetoWebp(imagePath: string): Promise<string> {
     await sharp(imagePath)
       .resize(320, 240)
       .toFile(imagePath + '.webp');
+    return imagePath + '.webp';
   }
 
   private async saveFileToCloudinary(tmpPath: string) {
