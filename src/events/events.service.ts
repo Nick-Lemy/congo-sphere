@@ -149,12 +149,14 @@ export class EventsService {
       attendeeUser,
     );
 
+    const isPaid = event.eventType === 'PAID' ? false : true;
     const attendee = await this.eventUsersService.create({
       eventId: event.id,
       userId: user.sub,
       role: EventRole.ATTENDEE,
       ticketUrl: ticketPath,
       ticketTypeId,
+      isPaid,
     });
 
     await this.emailsService.sendEventRegistrationEmail(
