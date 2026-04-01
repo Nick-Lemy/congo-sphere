@@ -28,10 +28,9 @@ export class FilesService {
   }
 
   private async convertImagetoWebp(imagePath: string): Promise<string> {
-    await sharp(imagePath)
-      .resize(320, 240)
-      .toFile(imagePath + '.webp');
-    return imagePath + '.webp';
+    const webpPath = imagePath + '.webp';
+    await sharp(imagePath).resize(320, 240).toFile(webpPath);
+    return webpPath;
   }
 
   private async saveFileToCloudinary(tmpPath: string) {
