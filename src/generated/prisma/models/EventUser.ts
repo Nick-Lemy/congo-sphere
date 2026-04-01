@@ -31,6 +31,7 @@ export type EventUserMinAggregateOutputType = {
   joinedAt: Date | null
   ticketUrl: string | null
   ticketTypeId: string | null
+  isPaid: boolean | null
 }
 
 export type EventUserMaxAggregateOutputType = {
@@ -40,6 +41,7 @@ export type EventUserMaxAggregateOutputType = {
   joinedAt: Date | null
   ticketUrl: string | null
   ticketTypeId: string | null
+  isPaid: boolean | null
 }
 
 export type EventUserCountAggregateOutputType = {
@@ -49,6 +51,7 @@ export type EventUserCountAggregateOutputType = {
   joinedAt: number
   ticketUrl: number
   ticketTypeId: number
+  isPaid: number
   _all: number
 }
 
@@ -60,6 +63,7 @@ export type EventUserMinAggregateInputType = {
   joinedAt?: true
   ticketUrl?: true
   ticketTypeId?: true
+  isPaid?: true
 }
 
 export type EventUserMaxAggregateInputType = {
@@ -69,6 +73,7 @@ export type EventUserMaxAggregateInputType = {
   joinedAt?: true
   ticketUrl?: true
   ticketTypeId?: true
+  isPaid?: true
 }
 
 export type EventUserCountAggregateInputType = {
@@ -78,6 +83,7 @@ export type EventUserCountAggregateInputType = {
   joinedAt?: true
   ticketUrl?: true
   ticketTypeId?: true
+  isPaid?: true
   _all?: true
 }
 
@@ -160,6 +166,7 @@ export type EventUserGroupByOutputType = {
   joinedAt: Date
   ticketUrl: string
   ticketTypeId: string | null
+  isPaid: boolean
   _count: EventUserCountAggregateOutputType | null
   _min: EventUserMinAggregateOutputType | null
   _max: EventUserMaxAggregateOutputType | null
@@ -190,6 +197,7 @@ export type EventUserWhereInput = {
   joinedAt?: Prisma.DateTimeFilter<"EventUser"> | Date | string
   ticketUrl?: Prisma.StringFilter<"EventUser"> | string
   ticketTypeId?: Prisma.StringNullableFilter<"EventUser"> | string | null
+  isPaid?: Prisma.BoolFilter<"EventUser"> | boolean
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   event?: Prisma.XOR<Prisma.EventScalarRelationFilter, Prisma.EventWhereInput>
   ticketType?: Prisma.XOR<Prisma.TicketTypeNullableScalarRelationFilter, Prisma.TicketTypeWhereInput> | null
@@ -202,6 +210,7 @@ export type EventUserOrderByWithRelationInput = {
   joinedAt?: Prisma.SortOrder
   ticketUrl?: Prisma.SortOrder
   ticketTypeId?: Prisma.SortOrderInput | Prisma.SortOrder
+  isPaid?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   event?: Prisma.EventOrderByWithRelationInput
   ticketType?: Prisma.TicketTypeOrderByWithRelationInput
@@ -218,6 +227,7 @@ export type EventUserWhereUniqueInput = Prisma.AtLeast<{
   joinedAt?: Prisma.DateTimeFilter<"EventUser"> | Date | string
   ticketUrl?: Prisma.StringFilter<"EventUser"> | string
   ticketTypeId?: Prisma.StringNullableFilter<"EventUser"> | string | null
+  isPaid?: Prisma.BoolFilter<"EventUser"> | boolean
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   event?: Prisma.XOR<Prisma.EventScalarRelationFilter, Prisma.EventWhereInput>
   ticketType?: Prisma.XOR<Prisma.TicketTypeNullableScalarRelationFilter, Prisma.TicketTypeWhereInput> | null
@@ -230,6 +240,7 @@ export type EventUserOrderByWithAggregationInput = {
   joinedAt?: Prisma.SortOrder
   ticketUrl?: Prisma.SortOrder
   ticketTypeId?: Prisma.SortOrderInput | Prisma.SortOrder
+  isPaid?: Prisma.SortOrder
   _count?: Prisma.EventUserCountOrderByAggregateInput
   _max?: Prisma.EventUserMaxOrderByAggregateInput
   _min?: Prisma.EventUserMinOrderByAggregateInput
@@ -245,12 +256,14 @@ export type EventUserScalarWhereWithAggregatesInput = {
   joinedAt?: Prisma.DateTimeWithAggregatesFilter<"EventUser"> | Date | string
   ticketUrl?: Prisma.StringWithAggregatesFilter<"EventUser"> | string
   ticketTypeId?: Prisma.StringNullableWithAggregatesFilter<"EventUser"> | string | null
+  isPaid?: Prisma.BoolWithAggregatesFilter<"EventUser"> | boolean
 }
 
 export type EventUserCreateInput = {
   role: $Enums.EventRole
   joinedAt?: Date | string
   ticketUrl?: string
+  isPaid?: boolean
   user: Prisma.UserCreateNestedOneWithoutEventUsersInput
   event: Prisma.EventCreateNestedOneWithoutParticipantsInput
   ticketType?: Prisma.TicketTypeCreateNestedOneWithoutEventUsersInput
@@ -263,12 +276,14 @@ export type EventUserUncheckedCreateInput = {
   joinedAt?: Date | string
   ticketUrl?: string
   ticketTypeId?: string | null
+  isPaid?: boolean
 }
 
 export type EventUserUpdateInput = {
   role?: Prisma.EnumEventRoleFieldUpdateOperationsInput | $Enums.EventRole
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ticketUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  isPaid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   user?: Prisma.UserUpdateOneRequiredWithoutEventUsersNestedInput
   event?: Prisma.EventUpdateOneRequiredWithoutParticipantsNestedInput
   ticketType?: Prisma.TicketTypeUpdateOneWithoutEventUsersNestedInput
@@ -281,6 +296,7 @@ export type EventUserUncheckedUpdateInput = {
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ticketUrl?: Prisma.StringFieldUpdateOperationsInput | string
   ticketTypeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isPaid?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type EventUserCreateManyInput = {
@@ -290,12 +306,14 @@ export type EventUserCreateManyInput = {
   joinedAt?: Date | string
   ticketUrl?: string
   ticketTypeId?: string | null
+  isPaid?: boolean
 }
 
 export type EventUserUpdateManyMutationInput = {
   role?: Prisma.EnumEventRoleFieldUpdateOperationsInput | $Enums.EventRole
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ticketUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  isPaid?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type EventUserUncheckedUpdateManyInput = {
@@ -305,6 +323,7 @@ export type EventUserUncheckedUpdateManyInput = {
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ticketUrl?: Prisma.StringFieldUpdateOperationsInput | string
   ticketTypeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isPaid?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type EventUserListRelationFilter = {
@@ -329,6 +348,7 @@ export type EventUserCountOrderByAggregateInput = {
   joinedAt?: Prisma.SortOrder
   ticketUrl?: Prisma.SortOrder
   ticketTypeId?: Prisma.SortOrder
+  isPaid?: Prisma.SortOrder
 }
 
 export type EventUserMaxOrderByAggregateInput = {
@@ -338,6 +358,7 @@ export type EventUserMaxOrderByAggregateInput = {
   joinedAt?: Prisma.SortOrder
   ticketUrl?: Prisma.SortOrder
   ticketTypeId?: Prisma.SortOrder
+  isPaid?: Prisma.SortOrder
 }
 
 export type EventUserMinOrderByAggregateInput = {
@@ -347,6 +368,7 @@ export type EventUserMinOrderByAggregateInput = {
   joinedAt?: Prisma.SortOrder
   ticketUrl?: Prisma.SortOrder
   ticketTypeId?: Prisma.SortOrder
+  isPaid?: Prisma.SortOrder
 }
 
 export type EventUserCreateNestedManyWithoutUserInput = {
@@ -487,6 +509,7 @@ export type EventUserCreateWithoutUserInput = {
   role: $Enums.EventRole
   joinedAt?: Date | string
   ticketUrl?: string
+  isPaid?: boolean
   event: Prisma.EventCreateNestedOneWithoutParticipantsInput
   ticketType?: Prisma.TicketTypeCreateNestedOneWithoutEventUsersInput
 }
@@ -497,6 +520,7 @@ export type EventUserUncheckedCreateWithoutUserInput = {
   joinedAt?: Date | string
   ticketUrl?: string
   ticketTypeId?: string | null
+  isPaid?: boolean
 }
 
 export type EventUserCreateOrConnectWithoutUserInput = {
@@ -535,12 +559,14 @@ export type EventUserScalarWhereInput = {
   joinedAt?: Prisma.DateTimeFilter<"EventUser"> | Date | string
   ticketUrl?: Prisma.StringFilter<"EventUser"> | string
   ticketTypeId?: Prisma.StringNullableFilter<"EventUser"> | string | null
+  isPaid?: Prisma.BoolFilter<"EventUser"> | boolean
 }
 
 export type EventUserCreateWithoutEventInput = {
   role: $Enums.EventRole
   joinedAt?: Date | string
   ticketUrl?: string
+  isPaid?: boolean
   user: Prisma.UserCreateNestedOneWithoutEventUsersInput
   ticketType?: Prisma.TicketTypeCreateNestedOneWithoutEventUsersInput
 }
@@ -551,6 +577,7 @@ export type EventUserUncheckedCreateWithoutEventInput = {
   joinedAt?: Date | string
   ticketUrl?: string
   ticketTypeId?: string | null
+  isPaid?: boolean
 }
 
 export type EventUserCreateOrConnectWithoutEventInput = {
@@ -583,6 +610,7 @@ export type EventUserCreateWithoutTicketTypeInput = {
   role: $Enums.EventRole
   joinedAt?: Date | string
   ticketUrl?: string
+  isPaid?: boolean
   user: Prisma.UserCreateNestedOneWithoutEventUsersInput
   event: Prisma.EventCreateNestedOneWithoutParticipantsInput
 }
@@ -593,6 +621,7 @@ export type EventUserUncheckedCreateWithoutTicketTypeInput = {
   role: $Enums.EventRole
   joinedAt?: Date | string
   ticketUrl?: string
+  isPaid?: boolean
 }
 
 export type EventUserCreateOrConnectWithoutTicketTypeInput = {
@@ -627,12 +656,14 @@ export type EventUserCreateManyUserInput = {
   joinedAt?: Date | string
   ticketUrl?: string
   ticketTypeId?: string | null
+  isPaid?: boolean
 }
 
 export type EventUserUpdateWithoutUserInput = {
   role?: Prisma.EnumEventRoleFieldUpdateOperationsInput | $Enums.EventRole
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ticketUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  isPaid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   event?: Prisma.EventUpdateOneRequiredWithoutParticipantsNestedInput
   ticketType?: Prisma.TicketTypeUpdateOneWithoutEventUsersNestedInput
 }
@@ -643,6 +674,7 @@ export type EventUserUncheckedUpdateWithoutUserInput = {
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ticketUrl?: Prisma.StringFieldUpdateOperationsInput | string
   ticketTypeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isPaid?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type EventUserUncheckedUpdateManyWithoutUserInput = {
@@ -651,6 +683,7 @@ export type EventUserUncheckedUpdateManyWithoutUserInput = {
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ticketUrl?: Prisma.StringFieldUpdateOperationsInput | string
   ticketTypeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isPaid?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type EventUserCreateManyEventInput = {
@@ -659,12 +692,14 @@ export type EventUserCreateManyEventInput = {
   joinedAt?: Date | string
   ticketUrl?: string
   ticketTypeId?: string | null
+  isPaid?: boolean
 }
 
 export type EventUserUpdateWithoutEventInput = {
   role?: Prisma.EnumEventRoleFieldUpdateOperationsInput | $Enums.EventRole
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ticketUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  isPaid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   user?: Prisma.UserUpdateOneRequiredWithoutEventUsersNestedInput
   ticketType?: Prisma.TicketTypeUpdateOneWithoutEventUsersNestedInput
 }
@@ -675,6 +710,7 @@ export type EventUserUncheckedUpdateWithoutEventInput = {
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ticketUrl?: Prisma.StringFieldUpdateOperationsInput | string
   ticketTypeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isPaid?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type EventUserUncheckedUpdateManyWithoutEventInput = {
@@ -683,6 +719,7 @@ export type EventUserUncheckedUpdateManyWithoutEventInput = {
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ticketUrl?: Prisma.StringFieldUpdateOperationsInput | string
   ticketTypeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isPaid?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type EventUserCreateManyTicketTypeInput = {
@@ -691,12 +728,14 @@ export type EventUserCreateManyTicketTypeInput = {
   role: $Enums.EventRole
   joinedAt?: Date | string
   ticketUrl?: string
+  isPaid?: boolean
 }
 
 export type EventUserUpdateWithoutTicketTypeInput = {
   role?: Prisma.EnumEventRoleFieldUpdateOperationsInput | $Enums.EventRole
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ticketUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  isPaid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   user?: Prisma.UserUpdateOneRequiredWithoutEventUsersNestedInput
   event?: Prisma.EventUpdateOneRequiredWithoutParticipantsNestedInput
 }
@@ -707,6 +746,7 @@ export type EventUserUncheckedUpdateWithoutTicketTypeInput = {
   role?: Prisma.EnumEventRoleFieldUpdateOperationsInput | $Enums.EventRole
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ticketUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  isPaid?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type EventUserUncheckedUpdateManyWithoutTicketTypeInput = {
@@ -715,6 +755,7 @@ export type EventUserUncheckedUpdateManyWithoutTicketTypeInput = {
   role?: Prisma.EnumEventRoleFieldUpdateOperationsInput | $Enums.EventRole
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ticketUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  isPaid?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 
@@ -726,6 +767,7 @@ export type EventUserSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   joinedAt?: boolean
   ticketUrl?: boolean
   ticketTypeId?: boolean
+  isPaid?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
   ticketType?: boolean | Prisma.EventUser$ticketTypeArgs<ExtArgs>
@@ -738,6 +780,7 @@ export type EventUserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   joinedAt?: boolean
   ticketUrl?: boolean
   ticketTypeId?: boolean
+  isPaid?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
   ticketType?: boolean | Prisma.EventUser$ticketTypeArgs<ExtArgs>
@@ -750,6 +793,7 @@ export type EventUserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   joinedAt?: boolean
   ticketUrl?: boolean
   ticketTypeId?: boolean
+  isPaid?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
   ticketType?: boolean | Prisma.EventUser$ticketTypeArgs<ExtArgs>
@@ -762,9 +806,10 @@ export type EventUserSelectScalar = {
   joinedAt?: boolean
   ticketUrl?: boolean
   ticketTypeId?: boolean
+  isPaid?: boolean
 }
 
-export type EventUserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"userId" | "eventId" | "role" | "joinedAt" | "ticketUrl" | "ticketTypeId", ExtArgs["result"]["eventUser"]>
+export type EventUserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"userId" | "eventId" | "role" | "joinedAt" | "ticketUrl" | "ticketTypeId" | "isPaid", ExtArgs["result"]["eventUser"]>
 export type EventUserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
@@ -795,6 +840,7 @@ export type $EventUserPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     joinedAt: Date
     ticketUrl: string
     ticketTypeId: string | null
+    isPaid: boolean
   }, ExtArgs["result"]["eventUser"]>
   composites: {}
 }
@@ -1227,6 +1273,7 @@ export interface EventUserFieldRefs {
   readonly joinedAt: Prisma.FieldRef<"EventUser", 'DateTime'>
   readonly ticketUrl: Prisma.FieldRef<"EventUser", 'String'>
   readonly ticketTypeId: Prisma.FieldRef<"EventUser", 'String'>
+  readonly isPaid: Prisma.FieldRef<"EventUser", 'Boolean'>
 }
     
 
