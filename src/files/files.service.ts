@@ -28,23 +28,28 @@ export class FilesService {
   }
 
   private async convertImagetoWebp(imagePath: string): Promise<string> {
-    const webpPath = imagePath + '.webp';
-    await sharp(imagePath).resize(320, 240).toFile(webpPath);
-    return webpPath;
+    try {
+      const webpPath = imagePath + '.webp';
+      await sharp(imagePath).resize(320, 240).toFile(webpPath);
+      return webpPath;
+    } catch (error) {
+      console.error('Image conversion failed:', error);
+      throw new InternalServerErrorException('Failed to process image');
+    } finally {
+      await this.deleteFile(imagePath);
+    }
   }
 
-  private async saveFileToCloudinary(tmpPath: string) {
+  private async saveFileToCloudinary(filePath: string) {
     try {
-      const { secure_url } = await cloudinary.uploader.upload(tmpPath);
+      const { secure_url } = await cloudinary.uploader.upload(filePath);
       return secure_url;
     } catch (error) {
       console.error('Upload failed:', error);
 
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException('Failed to upload file');
     } finally {
-      await unlink(tmpPath).catch((err: Error) => {
-        console.warn('Failed to delete temp file:', err.message);
-      });
+      await this.deleteFile(filePath);
     }
   }
 
@@ -56,5 +61,11 @@ export class FilesService {
     await mkdir('./tmp', { recursive: true });
     await writeFile(tmpPath, fileBuffer);
     return tmpPath;
+  }
+
+  private async deleteFile(filePath: string) {
+    return unlink(filePath).catch((err: Error) => {
+      console.warn('Failed to delete file:', err.message);
+    });
   }
 }
