@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
 import { randomUUID } from 'crypto';
 import { mkdir, unlink, writeFile } from 'fs/promises';
-import Stream from 'stream';
+import sharp from 'sharp';
 
 @Injectable()
 export class FilesService {
@@ -14,20 +14,27 @@ export class FilesService {
     });
   }
 
-  async uploadFile(
-    fileBuffer:
-      | string
-      | NodeJS.ArrayBufferView
-      | Iterable<string | NodeJS.ArrayBufferView>
-      | AsyncIterable<string | NodeJS.ArrayBufferView>
-      | Stream,
-    fileName: string,
-  ) {
-    const tmpPath = `./tmp/${randomUUID()}-${fileName}`;
-    try {
-      await mkdir('./tmp', { recursive: true });
-      await writeFile(tmpPath, fileBuffer);
+  async uploadImage(fileBuffer: Buffer, fileName: string): Promise<string> {
+    const tmpPath = await this.saveFileTemporarily(fileBuffer, fileName);
+    await this.convertImagetoWebp(tmpPath);
+    const secureUrl = await this.saveFileToCloudinary(tmpPath + '.webp');
+    return secureUrl;
+  }
 
+  async uploadPdf(fileBuffer: Buffer, fileName: string): Promise<string> {
+    const tmpPath = await this.saveFileTemporarily(fileBuffer, fileName);
+    const secureUrl = await this.saveFileToCloudinary(tmpPath);
+    return secureUrl;
+  }
+
+  private async convertImagetoWebp(imagePath: string): Promise<void> {
+    await sharp(imagePath)
+      .resize(320, 240)
+      .toFile(imagePath + '.webp');
+  }
+
+  private async saveFileToCloudinary(tmpPath: string) {
+    try {
       const { secure_url } = await cloudinary.uploader.upload(tmpPath);
       return secure_url;
     } catch (error) {
@@ -39,5 +46,15 @@ export class FilesService {
         console.warn('Failed to delete temp file:', err.message);
       });
     }
+  }
+
+  private async saveFileTemporarily(
+    fileBuffer: Buffer,
+    fileName: string,
+  ): Promise<string> {
+    const tmpPath = `./tmp/${randomUUID()}-${fileName}`;
+    await mkdir('./tmp', { recursive: true });
+    await writeFile(tmpPath, fileBuffer);
+    return tmpPath;
   }
 }
