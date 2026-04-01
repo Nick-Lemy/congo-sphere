@@ -47,7 +47,7 @@ export class EventsService {
           role: EventRole.HOST,
         },
       });
-      if (Array.isArray(ticketTypes) && ticketTypes.length > 0) {
+      if (ticketTypes && ticketTypes.length > 0) {
         await tx.ticketType.createMany({
           data:
             ticketTypes?.map((ticket) => ({
@@ -68,6 +68,7 @@ export class EventsService {
         participants: {
           where: { role: EventRole.HOST },
           select: {
+            role: true,
             user: {
               select: { id: true, name: true, email: true, avatarUrl: true },
             },
@@ -83,6 +84,7 @@ export class EventsService {
       include: {
         participants: {
           select: {
+            role: true,
             user: {
               select: { id: true, name: true, email: true, avatarUrl: true },
             },
@@ -147,12 +149,14 @@ export class EventsService {
       attendeeUser,
     );
 
+    const isPaid = event.eventType === 'PAID' ? false : true;
     const attendee = await this.eventUsersService.create({
       eventId: event.id,
       userId: user.sub,
       role: EventRole.ATTENDEE,
       ticketUrl: ticketPath,
       ticketTypeId,
+      isPaid,
     });
 
     await this.emailsService.sendEventRegistrationEmail(

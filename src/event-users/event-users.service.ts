@@ -52,6 +52,7 @@ export class EventUsersService {
     return await this.prisma.eventUser.findMany({
       where: { eventId: id },
       select: {
+        role: true,
         user: {
           select: { id: true, name: true, email: true, avatarUrl: true },
         },

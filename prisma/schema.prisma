@@ -65,6 +65,7 @@ model EventUser {
 
   ticketUrl    String  @default("https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf")
   ticketTypeId String?
+  isPaid       Boolean @default(false)
 
   user       User        @relation(fields: [userId], references: [id])
   event      Event       @relation(fields: [eventId], references: [id])

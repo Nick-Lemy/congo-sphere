@@ -1,4 +1,4 @@
-import { IsUUID } from 'class-validator';
+import { IsBoolean, IsUUID } from 'class-validator';
 import { EventRole } from '../../generated/prisma/enums';
 
 export class CreateEventUsersDto {
@@ -9,4 +9,7 @@ export class CreateEventUsersDto {
 
   @IsUUID()
   ticketTypeId?: string;
+
+  @IsBoolean()
+  isPaid?: boolean = false;
 }
