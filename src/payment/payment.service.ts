@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PaymentProvider } from '../common/types/payment.types';
-import { DepositResponseDto } from './dto/deposit-response.dto';
+import { InitiateDepositResponseDto } from './dto/initiate-deposit-response.dto';
 import { randomUUID } from 'crypto';
 
 @Injectable()
@@ -42,7 +42,7 @@ export class PaymentService {
           customerMessage,
         }),
       });
-      const data = (await response.json()) as DepositResponseDto;
+      const data = (await response.json()) as InitiateDepositResponseDto;
       return data;
     } catch (error) {
       console.warn('Error while initiating deposit', error);
@@ -68,5 +68,25 @@ export class PaymentService {
       this.ticketPaymentMessaage,
     );
     return depositResponse;
+  }
+
+  async checkDepositStatus(depositId: string) {
+    try {
+      const response = await fetch(
+        `${this.PAWAPAY_URL}/deposits/${depositId}`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${this.API_TOKEN}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      const data = (await response.json()) as InitiateDepositResponseDto;
+      return data;
+    } catch (error) {
+      console.warn('Error while checking deposit status', error);
+      throw new InternalServerErrorException('Failed to check deposit status');
+    }
   }
 }

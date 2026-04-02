@@ -1,17 +1,20 @@
-import { DepositStatus, FailureReason } from '../../common/types/payment.types';
+import {
+  InitiateDepositStatus,
+  FailureReason,
+} from '../../common/types/payment.types';
 
-export type DepositResponseDto =
+export type InitiateDepositResponseDto =
   | AcceptedDepositResponseDto
   | RejectedDepositResponseDto;
 
 export class AcceptedDepositResponseDto {
   depositId!: string;
-  status!: DepositStatus.ACCEPTED;
+  status!: InitiateDepositStatus.ACCEPTED;
   created!: string;
 }
 
 export class RejectedDepositResponseDto {
   depositId!: string;
-  status!: DepositStatus.REJECTED;
+  status!: InitiateDepositStatus.REJECTED;
   failureReason!: FailureReason;
 }
