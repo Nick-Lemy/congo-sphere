@@ -1,5 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PaymentProvider } from '../common/types/payment.types';
+import { DepositResponseDto } from './dto/deposit-response.dto';
 
 @Injectable()
 export class PaymentService {
@@ -8,12 +9,12 @@ export class PaymentService {
   private PAYER_TYPE = 'MMO';
   private CURRENCY = 'XAF';
 
-  async initiateDeposit(
+  private async initiateDeposit(
     ticketTypeId: string,
     amount: string,
     phoneNumber: string,
     userId: string,
-  ) {
+  ): Promise<DepositResponseDto> {
     const paymentProvider = this.predictProvider(phoneNumber);
     try {
       const response = await fetch(`${this.PAWAPAY_URL}/deposits`, {
@@ -41,7 +42,8 @@ export class PaymentService {
           ],
         }),
       });
-      return response;
+      const data = (await response.json()) as DepositResponseDto;
+      return data;
     } catch (error) {
       console.warn('Error while initiating deposit', error);
       throw new InternalServerErrorException('Deposit failed');
