@@ -178,6 +178,13 @@ export class EventsService {
           ? confirmPayment.data.status === CheckDepositStatus.COMPLETED
           : false;
 
+      console.log(
+        'Payment succesfull? : ',
+        confirmPayment.status === 'FOUND'
+          ? confirmPayment.data.status
+          : 'NOT FOUND',
+      );
+
       await this.prisma.eventUser.update({
         where: { userId_eventId: { userId: user.sub, eventId } },
         data: {
