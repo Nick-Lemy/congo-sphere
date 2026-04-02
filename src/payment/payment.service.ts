@@ -89,6 +89,7 @@ export class PaymentService {
       phoneNumber,
       this.ticketPaymentMessaage,
     );
+    console.log(depositResponse);
     return depositResponse;
   }
 
@@ -110,6 +111,7 @@ export class PaymentService {
         },
       );
       const data = (await response.json()) as CheckDepositStatusResponseDto;
+      console.log(data);
       return data;
     } catch (error) {
       console.warn('Error while checking deposit status', error);
