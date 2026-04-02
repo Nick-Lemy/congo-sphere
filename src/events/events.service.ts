@@ -13,6 +13,8 @@ import { FilesService } from '../files/files.service';
 import { EmailsService } from '../emails/emails.service';
 import { TicketsService } from '../tickets/tickets.service';
 import { UserService } from '../user/user.service';
+import { PaymentService } from '../payment/payment.service';
+import { CheckDepositStatus } from '../common/types/payment.types';
 
 @Injectable()
 export class EventsService {
@@ -23,6 +25,7 @@ export class EventsService {
     private readonly emailsService: EmailsService,
     private readonly ticketsService: TicketsService,
     private readonly userService: UserService,
+    private readonly paymentService: PaymentService,
   ) {}
 
   async create(
@@ -149,15 +152,35 @@ export class EventsService {
       attendeeUser,
     );
 
-    const isPaid = event.eventType === 'PAID' ? false : true;
     const attendee = await this.eventUsersService.create({
       eventId: event.id,
       userId: user.sub,
       role: EventRole.ATTENDEE,
       ticketUrl: ticketPath,
       ticketTypeId,
-      isPaid,
+      isPaid: false,
     });
+    if (attendee.ticketTypeId && event.eventType === 'PAID') {
+      const requestPayment = await this.paymentService.processTicketPayment(
+        user.sub,
+        attendee.ticketTypeId,
+        '242063456789',
+      );
+      const confirmPayment = await this.paymentService.checkDepositStatus(
+        requestPayment.depositId,
+      );
+      const isPaid =
+        confirmPayment.status === 'FOUND'
+          ? confirmPayment.data.status === CheckDepositStatus.COMPLETED
+          : false;
+
+      await this.prisma.eventUser.update({
+        where: { userId_eventId: { userId: user.sub, eventId } },
+        data: {
+          isPaid,
+        },
+      });
+    }
 
     await this.emailsService.sendEventRegistrationEmail(
       user.email,

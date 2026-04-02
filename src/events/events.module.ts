@@ -7,10 +7,17 @@ import { FilesService } from '../files/files.service';
 import { EmailsModule } from '../emails/emails.module';
 import { TicketsModule } from '../tickets/tickets.module';
 import { UserModule } from '../user/user.module';
+import { PaymentModule } from '../payment/payment.module';
 
 @Module({
   providers: [EventsService, PrismaService, FilesService],
   controllers: [EventsController],
-  imports: [EventUsersModule, EmailsModule, TicketsModule, UserModule],
+  imports: [
+    EventUsersModule,
+    EmailsModule,
+    TicketsModule,
+    UserModule,
+    PaymentModule,
+  ],
 })
 export class EventsModule {}
