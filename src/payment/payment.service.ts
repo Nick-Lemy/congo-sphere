@@ -3,6 +3,7 @@ import { PaymentProvider } from '../common/types/payment.types';
 import { InitiateDepositResponseDto } from './dto/initiate-deposit-response.dto';
 import { randomUUID } from 'crypto';
 import { CheckDepositStatusResponseDto } from './dto/status-check-deposit-response.dto';
+import { ResendDepositResponseDto } from './dto/resend-deposit-response.dto';
 
 @Injectable()
 export class PaymentService {
@@ -50,6 +51,20 @@ export class PaymentService {
       throw new InternalServerErrorException('Deposit failed');
     }
   }
+  private async resendDepositRequest(depositId: string) {
+    try {
+      const response = await fetch(
+        `${this.PAWAPAY_URL}/deposits/resend-callback/${depositId}`,
+      );
+      const data = (await response.json()) as ResendDepositResponseDto;
+      return data;
+    } catch (error) {
+      console.warn('Error while resending deposit request', error);
+      throw new InternalServerErrorException(
+        'Failed to resend deposit request',
+      );
+    }
+  }
 
   private predictProvider(phoneNumber: string): PaymentProvider {
     return phoneNumber.substring(0, 5).endsWith('06')
@@ -88,21 +103,6 @@ export class PaymentService {
     } catch (error) {
       console.warn('Error while checking deposit status', error);
       throw new InternalServerErrorException('Failed to check deposit status');
-    }
-  }
-
-  async resendDepositRequest(depositId: string) {
-    try {
-      const response = await fetch(
-        `${this.PAWAPAY_URL}/deposits/resend-callback/${depositId}`,
-      );
-      const data = (await response.json()) as CheckDepositStatusResponseDto;
-      return data;
-    } catch (error) {
-      console.warn('Error while resending deposit request', error);
-      throw new InternalServerErrorException(
-        'Failed to resend deposit request',
-      );
     }
   }
 }
