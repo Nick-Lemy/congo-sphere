@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PaymentProvider } from '../common/types/payment.types';
 import { InitiateDepositResponseDto } from './dto/initiate-deposit-response.dto';
 import { randomUUID } from 'crypto';
+import { CheckDepositStatusResponseDto } from './dto/status-check-deposit-response.dto';
 
 @Injectable()
 export class PaymentService {
@@ -82,7 +83,7 @@ export class PaymentService {
           },
         },
       );
-      const data = (await response.json()) as InitiateDepositResponseDto;
+      const data = (await response.json()) as CheckDepositStatusResponseDto;
       return data;
     } catch (error) {
       console.warn('Error while checking deposit status', error);
