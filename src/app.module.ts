@@ -12,6 +12,7 @@ import { FilesService } from './files/files.service';
 import { EmailsModule } from './emails/emails.module';
 import { TicketsModule } from './tickets/tickets.module';
 import { ConfigModule } from '@nestjs/config';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ConfigModule } from '@nestjs/config';
     EventUsersModule,
     EmailsModule,
     TicketsModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [
