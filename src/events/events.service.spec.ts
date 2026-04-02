@@ -6,6 +6,7 @@ import { FilesService } from '../files/files.service';
 import { EmailsService } from '../emails/emails.service';
 import { TicketsService } from '../tickets/tickets.service';
 import { UserService } from '../user/user.service';
+import { PaymentService } from '../payment/payment.service';
 
 describe('EventsService', () => {
   let service: EventsService;
@@ -25,6 +26,11 @@ describe('EventsService', () => {
     findUnique: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
+  };
+
+  const mockPaymentService = {
+    processTicketPayment: jest.fn(),
+    checkDepositStatus: jest.fn(),
   };
 
   const mockFilesService = {
@@ -68,6 +74,7 @@ describe('EventsService', () => {
           useValue: mockTicketsService,
         },
         { provide: UserService, useValue: mockUserService },
+        { provide: PaymentService, useValue: mockPaymentService },
       ],
     }).compile();
 

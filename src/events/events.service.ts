@@ -201,7 +201,9 @@ export class EventsService {
       [{ filename: 'ticket.pdf', path: ticketPath }],
     );
 
-    return attendee;
+    return this.prisma.eventUser.findUnique({
+      where: { userId_eventId: { userId: user.sub, eventId } },
+    });
   }
 
   async cancelRegistration(eventId: string, user: JwtPayload) {
