@@ -6,7 +6,7 @@ import { CheckDepositStatusResponseDto } from './dto/status-check-deposit-respon
 
 @Injectable()
 export class PaymentService {
-  private readonly PAWAPAY_URL = process.env.PAWAPAY_URL;
+  private readonly PAWAPAY_URL = process.env.PAWAPAY_URL + '/v2';
   private readonly API_TOKEN = process.env.PAWAPAY_API_TOKEN;
   private readonly PAYER_TYPE = 'MMO';
   private readonly CURRENCY = 'XAF';
@@ -88,6 +88,21 @@ export class PaymentService {
     } catch (error) {
       console.warn('Error while checking deposit status', error);
       throw new InternalServerErrorException('Failed to check deposit status');
+    }
+  }
+
+  async resendDepositRequest(depositId: string) {
+    try {
+      const response = await fetch(
+        `${this.PAWAPAY_URL}/deposits/resend-callback/${depositId}`,
+      );
+      const data = (await response.json()) as CheckDepositStatusResponseDto;
+      return data;
+    } catch (error) {
+      console.warn('Error while resending deposit request', error);
+      throw new InternalServerErrorException(
+        'Failed to resend deposit request',
+      );
     }
   }
 }
