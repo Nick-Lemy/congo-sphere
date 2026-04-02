@@ -92,6 +92,11 @@ export class PaymentService {
     return depositResponse;
   }
 
+  async resendTicketPaymentCallback(eventUserId: string) {
+    const resendResponse = await this.resendDepositRequest(eventUserId);
+    return resendResponse;
+  }
+
   async checkDepositStatus(depositId: string) {
     try {
       const response = await fetch(
