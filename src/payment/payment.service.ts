@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PaymentProvider } from '../common/types/payment.types';
 import { DepositResponseDto } from './dto/deposit-response.dto';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class PaymentService {
@@ -10,12 +11,13 @@ export class PaymentService {
   private readonly CURRENCY = 'XAF';
 
   private async initiateDeposit(
-    ticketTypeId: string,
+    clientReferenceId: string,
     amount: string,
     phoneNumber: string,
-    userId: string,
+    customerMessage: string,
   ): Promise<DepositResponseDto> {
     const paymentProvider = this.predictProvider(phoneNumber);
+    const depositId = randomUUID();
     try {
       const response = await fetch(`${this.PAWAPAY_URL}/deposits`, {
         method: 'POST',
@@ -24,7 +26,7 @@ export class PaymentService {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          depositId: '2ed74e66-4635-4f25-9d8a-776cd041e336',
+          depositId,
           payer: {
             type: this.PAYER_TYPE,
             accountDetails: {
@@ -34,12 +36,8 @@ export class PaymentService {
           },
           amount,
           currency: this.CURRENCY,
-          clientReferenceId: `INV-${userId.toUpperCase()}`,
-          customerMessage: 'Payment for the event - Congo Sphere',
-          metadata: [
-            { orderId: `ORD-${ticketTypeId}` },
-            { customerId: 'customer@email.com', isPII: true },
-          ],
+          clientReferenceId: `${clientReferenceId}`,
+          customerMessage,
         }),
       });
       const data = (await response.json()) as DepositResponseDto;
