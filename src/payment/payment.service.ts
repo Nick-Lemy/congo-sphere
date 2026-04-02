@@ -4,10 +4,10 @@ import { DepositResponseDto } from './dto/deposit-response.dto';
 
 @Injectable()
 export class PaymentService {
-  private PAWAPAY_URL = process.env.PAWAPAY_URL;
-  private API_TOKEN = process.env.PAWAPAY_API_TOKEN;
-  private PAYER_TYPE = 'MMO';
-  private CURRENCY = 'XAF';
+  private readonly PAWAPAY_URL = process.env.PAWAPAY_URL;
+  private readonly API_TOKEN = process.env.PAWAPAY_API_TOKEN;
+  private readonly PAYER_TYPE = 'MMO';
+  private readonly CURRENCY = 'XAF';
 
   private async initiateDeposit(
     ticketTypeId: string,
@@ -50,7 +50,7 @@ export class PaymentService {
     }
   }
 
-  predictProvider(phoneNumber: string): PaymentProvider {
+  private predictProvider(phoneNumber: string): PaymentProvider {
     return phoneNumber.substring(0, 5).endsWith('06')
       ? PaymentProvider.MTN
       : PaymentProvider.AIRTEL;
