@@ -61,7 +61,7 @@ export class CreateEventDto {
     description: 'List of ticket types for the event',
     example: [
       { name: 'General Admission', price: 0 },
-      { name: 'VIP', price: 100 },
+      { name: 'VIP', price: 10000 },
     ],
   })
   @IsOptional()
