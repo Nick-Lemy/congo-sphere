@@ -9,13 +9,15 @@ export class PaymentService {
   private readonly API_TOKEN = process.env.PAWAPAY_API_TOKEN;
   private readonly PAYER_TYPE = 'MMO';
   private readonly CURRENCY = 'XAF';
+  private readonly ticketPaymentMessaage =
+    'Procedez au paiement de votre ticket pour Congo Sphere';
 
   private async initiateDeposit(
     clientReferenceId: string,
     amount: string,
     phoneNumber: string,
     customerMessage: string,
-  ): Promise<DepositResponseDto> {
+  ) {
     const paymentProvider = this.predictProvider(phoneNumber);
     const depositId = randomUUID();
     try {
@@ -52,5 +54,19 @@ export class PaymentService {
     return phoneNumber.substring(0, 5).endsWith('06')
       ? PaymentProvider.MTN
       : PaymentProvider.AIRTEL;
+  }
+
+  async processTicketPayment(
+    eventUserId: string,
+    amount: string,
+    phoneNumber: string,
+  ) {
+    const depositResponse = await this.initiateDeposit(
+      eventUserId,
+      amount,
+      phoneNumber,
+      this.ticketPaymentMessaage,
+    );
+    return depositResponse;
   }
 }
