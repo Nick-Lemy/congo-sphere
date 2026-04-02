@@ -55,6 +55,12 @@ export class PaymentService {
     try {
       const response = await fetch(
         `${this.PAWAPAY_URL}/deposits/resend-callback/${depositId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.API_TOKEN}`,
+            'Content-Type': 'application/json',
+          },
+        },
       );
       const data = (await response.json()) as ResendDepositResponseDto;
       return data;
