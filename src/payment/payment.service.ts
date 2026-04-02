@@ -11,8 +11,7 @@ export class PaymentService {
   private readonly API_TOKEN = process.env.PAWAPAY_API_TOKEN;
   private readonly PAYER_TYPE = 'MMO';
   private readonly CURRENCY = 'XAF';
-  private readonly ticketPaymentMessaage =
-    'Procedez au paiement de votre ticket pour Congo Sphere';
+  private readonly ticketPaymentMessaage = 'Paiement du ticket';
 
   private async initiateDeposit(
     clientReferenceId: string,

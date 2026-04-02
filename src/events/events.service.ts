@@ -161,9 +161,13 @@ export class EventsService {
       isPaid: false,
     });
     if (attendee.ticketTypeId && event.eventType === 'PAID') {
+      const ticketType = await this.prisma.ticketType.findUnique({
+        where: { id: attendee.ticketTypeId },
+      });
+      if (!ticketType) throw new NotFoundException('Ticket type not found!');
       const requestPayment = await this.paymentService.processTicketPayment(
-        user.sub,
-        attendee.ticketTypeId,
+        attendee.eventId + attendee.userId,
+        ticketType.price.toString(),
         '242063456789',
       );
       const confirmPayment = await this.paymentService.checkDepositStatus(
