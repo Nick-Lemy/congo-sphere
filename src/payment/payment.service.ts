@@ -70,7 +70,6 @@ export class PaymentService {
       );
     }
   }
-
   private predictProvider(phoneNumber: string): PaymentProvider {
     return phoneNumber.substring(0, 5).endsWith('06')
       ? PaymentProvider.MTN

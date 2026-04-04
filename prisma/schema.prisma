@@ -70,6 +70,7 @@ model EventUser {
   user       User        @relation(fields: [userId], references: [id])
   event      Event       @relation(fields: [eventId], references: [id])
   ticketType TicketType? @relation(fields: [ticketTypeId], references: [id])
+  depositId  String?
 
   @@id([userId, eventId])
   @@index([eventId])
