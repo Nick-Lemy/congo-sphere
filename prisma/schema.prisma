@@ -15,46 +15,42 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  username  String   @unique
-  avatarUrl String   @default("https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y")
-  email     String   @unique
-  password  String
-  role      UserRole @default(USER)
-
+  id         String      @id @default(uuid())
+  name       String
+  username   String      @unique
+  avatarUrl  String      @default("https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y")
+  email      String      @unique
+  password   String
+  role       UserRole    @default(USER)
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
   eventUsers EventUser[]
 }
 
 model Event {
-  id          String   @id @default(uuid())
-  title       String
-  imageUrl    String
-  description String
-  location    String
-  startDate   DateTime
-  endDate     DateTime
-
+  id           String       @id @default(uuid())
+  title        String
+  imageUrl     String
+  description  String
+  location     String
+  startDate    DateTime
+  endDate      DateTime
   isFeatured   Boolean      @default(false)
   category     String       @default("general")
   eventType    EventType    @default(FREE)
   ticketTypes  TicketType[]
   participants EventUser[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 }
 
 model TicketType {
-  id      String @id @default(uuid())
+  id      String   @id @default(uuid())
   eventId String
   name    String
   price   Float
-  event   Event  @relation(fields: [eventId], references: [id])
-
-  eventUsers EventUser[]
+  event   Event    @relation(fields: [eventId], references: [id])
+  tickets Ticket[]
 }
 
 model EventUser {
@@ -62,19 +58,42 @@ model EventUser {
   eventId  String
   role     EventRole
   joinedAt DateTime  @default(now())
-
-  ticketUrl    String  @default("https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf")
-  ticketTypeId String?
-  isPaid       Boolean @default(false)
-
-  user       User        @relation(fields: [userId], references: [id])
-  event      Event       @relation(fields: [eventId], references: [id])
-  ticketType TicketType? @relation(fields: [ticketTypeId], references: [id])
-  depositId  String?
+  user     User      @relation(fields: [userId], references: [id])
+  event    Event     @relation(fields: [eventId], references: [id])
+  tickets  Ticket[]
 
   @@id([userId, eventId])
   @@index([eventId])
   @@index([userId])
+}
+
+model Ticket {
+  id           String     @id @default(uuid())
+  userId       String
+  eventId      String
+  ticketTypeId String
+  ticketUrl    String
+  isPaid       Boolean    @default(false)
+  createdAt    DateTime   @default(now())
+  eventUser    EventUser  @relation(fields: [userId, eventId], references: [userId, eventId])
+  ticketType   TicketType @relation(fields: [ticketTypeId], references: [id])
+  payment      Payment?
+
+  @@index([eventId])
+  @@index([userId])
+}
+
+model Payment {
+  id                String          @id @default(uuid())
+  ticketId          String          @unique
+  amount            Int
+  currency          String
+  status            PaymentStatus   @default(PENDING)
+  provider          PaymentProvider
+  providerReference String
+  idempotencyKey    String          @unique
+  createdAt         DateTime        @default(now())
+  ticket            Ticket          @relation(fields: [ticketId], references: [id])
 }
 
 enum EventRole {
@@ -90,4 +109,16 @@ enum UserRole {
 enum EventType {
   FREE
   PAID
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum PaymentProvider {
+  FLUTTERWAVE
+  PAWAPAY
 }

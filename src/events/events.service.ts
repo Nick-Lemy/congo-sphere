@@ -160,6 +160,7 @@ export class EventsService {
       ticketTypeId,
       isPaid: false,
     });
+
     if (attendee.ticketTypeId && event.eventType === 'PAID') {
       const ticketType = await this.prisma.ticketType.findUnique({
         where: { id: attendee.ticketTypeId },
@@ -170,6 +171,7 @@ export class EventsService {
         ticketType.price.toString(),
         '242063456789',
       );
+
       const confirmPayment = await this.paymentService.checkDepositStatus(
         requestPayment.depositId,
       );
@@ -178,15 +180,11 @@ export class EventsService {
           ? confirmPayment.data.status === CheckDepositStatus.COMPLETED
           : false;
 
-      console.log(
-        'Payment succesfull? : ',
-        confirmPayment.status === 'FOUND'
-          ? confirmPayment.data.status
-          : 'NOT FOUND',
-      );
-
       await this.prisma.eventUser.update({
-        where: { userId_eventId: { userId: user.sub, eventId } },
+        where: {
+          userId_eventId: { userId: user.sub, eventId },
+          depositId: requestPayment.depositId,
+        },
         data: {
           isPaid,
         },
