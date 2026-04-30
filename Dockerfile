@@ -13,7 +13,7 @@ RUN apk add --no-cache pnpm
 WORKDIR /app
 
 COPY package*.json pnpm-lock.yaml ./
-RUN pnpm install --prod
+RUN pnpm install --prod --ignore-scripts
 
 COPY --from=builder /app/dist ./dist
 
